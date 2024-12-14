@@ -1,0 +1,58 @@
+﻿@model IR_Hub.Models.Bookmark
+
+<h2 class="text-center mt-5">Editare Bookmark</h2>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header text-white bg-dark">
+                    <h4 class="m-0">Modifică Bookmark</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Afișarea erorilor de validare doar dacă există -->
+                    @if (ViewData.ModelState.ErrorCount > 0)
+                    {
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <li>@error.ErrorMessage</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <form method="post" asp-action="Edit" asp-controller="Bookmark" asp-route-id="@Model.Id">
+
+                        <!-- Titlu Bookmark -->
+                        <div class="form-group">
+                            <label asp-for="Title" class="form-label">Titlu Bookmark</label>
+                            <input asp-for="Title" class="form-control form-control-lg" placeholder="Introdu titlul bookmark-ului" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <!-- Descriere Bookmark -->
+                        <div class="form-group mt-3">
+                            <label asp-for="Description" class="form-label">Descriere Bookmark</label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Introdu descrierea bookmark-ului"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <!-- Media Content (URL) -->
+                        <div class="form-group mt-3">
+                            <label asp-for="Media_Content" class="form-label">Media Content (URL)</label>
+                            <input asp-for="Media_Content" type="url" class="form-control" placeholder="Adaugă un link media (de ex. YouTube)" />
+                            <span asp-validation-for="Media_Content" class="text-danger"></span>
+                        </div>
+
+                        <!-- Buton submit -->
+                        <div class="form-group text-center mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">Modifică Bookmark</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,69 @@
+﻿
+<h2 class="text-center mt-5">Detalii Articol: @Model.Title</h2>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <!-- Detalii despre articol -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>Postat de: @Model.User.UserName</strong>
+                    <br />
+                    <small>@Model.Date_created.ToString("dd/MM/yyyy")</small>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Title</h5>
+                    <p class="card-text">@Model.Description</p>
+                    @if (!string.IsNullOrEmpty(Model.Media_Content))
+                    {
+                        <div class="media-content">
+                            <iframe src="@Model.Media_Content" width="100%" height="400px" frameborder="0"></iframe>
+                        </div>
+                    }
+                </div>
+                <div class="card-footer text-muted">
+                    <span>Voturi: @Model.VotesCount | Comentarii: @Model.CommentsCount</span>
+                    @if (ViewBag.AfisareButoane)
+                    {
+                        <div class="float-right">
+                            @if (ViewBag.EsteAdmin || Model.UserId == ViewBag.UserCurent)
+                            {
+                                <a class="btn btn-warning btn-sm" href="@Url.Action("Edit", "Bookmark", new { id = Model.Id })">Editează</a>
+                                <form action="@Url.Action("Delete", "Bookmark", new { id = Model.Id })" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm">Șterge</button>
+                                </form>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Comentarii -->
+            <h4>Comentarii (@Model.CommentsCount)</h4>
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="media mb-3">
+                    <img class="mr-3" src="https://www.gravatar.com/avatar/@comment.User.Email.GetHashCode()" alt="user" width="50" height="50">
+                    <div class="media-body">
+                        <h5 class="mt-0">@comment.User.UserName</h5>
+                        <p>@comment.Content</p>
+                        <small>@comment.Date_created.ToString("dd/MM/yyyy HH:mm")</small>
+                    </div>
+                </div>
+            }
+
+            <!-- Adaugă comentariu -->
+            @if (User.Identity.IsAuthenticated)
+            {
+                <form method="post" asp-action="Show" asp-controller="Bookmark">
+                    <input type="hidden" name="BookmarkId" value="@Model.Id" />
+                    <div class="form-group">
+                        <label for="CommentContent">Comentariul tău:</label>
+                        <textarea id="CommentContent" name="Content" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Adaugă Comentariul</button>
+                </form>
+            }
+        </div>
+    </div>
+</div>

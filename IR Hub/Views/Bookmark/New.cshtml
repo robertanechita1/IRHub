@@ -1,0 +1,50 @@
+﻿@model IR_Hub.Models.Bookmark
+
+<h2 class="text-center mt-5">Adaugare articol</h2>
+<br />
+
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-6 offset-3">
+
+            <form method="post" asp-action="New" asp-controller="Bookmark">
+
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Title" class="form-label">Titlu Bookmark</label>
+                    <br />
+                    <input asp-for="Title" class="form-control" />
+
+                    <!-- Mesaj de validare  -->
+                    <span asp-validation-for="Title" class="text-danger"></span>
+
+                    <br /><br />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description" class="form-label">Continut Articol</label>
+                    <br />
+                    <!-- <textarea asp-for="Description" class="form-control summernote"></textarea>-->
+                    <textarea asp-for="Description" class="form-control"></textarea>
+
+                    <!-- Mesaj de validare -->
+                    <span asp-validation-for="Description" class="text-danger"></span>
+
+                    <br /><br />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Media_Content">Media Content</label>
+                    <input type="url" class="form-control" id="Media_Content" name="Media_Content" value="@Model.Media_Content" />
+                </div>
+                <br />
+                <button class="btn btn-success" type="submit">Adauga articol</button>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+

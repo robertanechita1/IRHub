@@ -1,0 +1,48 @@
+﻿<form method="get">
+    <div class="form-group">
+        <label for="sortOrder">Sortează după</label>
+        @Html.DropDownList("sortOrder", new List<SelectListItem>
+        {
+        new SelectListItem { Text = "Cele mai populare", Value = "popular" },
+        new SelectListItem { Text = "Cele mai recente", Value = "recent" }
+        }, new { @class = "form-control", onchange = "this.form.submit()" })
+    </div>
+</form>
+
+@if (ViewBag.Bookmarks == null)
+{
+    <div class="alert alert-warning text-center">
+        Nu există bookmark-uri disponibile.
+    </div>
+}
+else
+{
+    <div class="container mt-5">
+        <div class="row">
+            @foreach (var bookmark in ViewBag.Bookmarks)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title">@bookmark.Title</h4>
+
+                            <p class="text-muted">Adăugat de: @bookmark.User.UserName</p>
+
+                            <p class="card-text">@bookmark.Description</p>
+
+                            <small class="text-muted">Creat la: @bookmark.Date_created.ToShortDateString()</small>
+                        </div>
+
+                        <div class="card-footer text-center">
+                            <a href="@Url.Action("Show", "Bookmark", new { id = bookmark.Id })" class="btn btn-primary btn-sm">
+                                Vezi detalii
+                            </a>
+
+                           
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
