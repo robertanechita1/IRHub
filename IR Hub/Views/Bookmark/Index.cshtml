@@ -1,4 +1,14 @@
-﻿<form method="get">
+﻿
+<!-- Search Form -->
+<form method="GET" class="mb-3">
+    <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search topics or keywords" name="search" value="@ViewBag.SearchString">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </div>
+</form>
+
+<!-- Dropdown for Sorting -->
+<form method="get" class="mb-3" style="width: 200px;">
     <div class="form-group">
         <label for="sortOrder">Sortează după</label>
         @Html.DropDownList("sortOrder", new List<SelectListItem>
@@ -9,6 +19,7 @@
     </div>
 </form>
 
+<!-- Displaying Bookmarks -->
 @if (ViewBag.Bookmarks == null)
 {
     <div class="alert alert-warning text-center">
@@ -25,20 +36,12 @@ else
                     <div class="card h-100">
                         <div class="card-body">
                             <h4 class="card-title">@bookmark.Title</h4>
-
                             <p class="text-muted">Adăugat de: @bookmark.User.UserName</p>
-
                             <p class="card-text">@bookmark.Description</p>
-
                             <small class="text-muted">Creat la: @bookmark.Date_created.ToShortDateString()</small>
                         </div>
-
                         <div class="card-footer text-center">
-                            <a href="@Url.Action("Show", "Bookmark", new { id = bookmark.Id })" class="btn btn-primary btn-sm">
-                                Vezi detalii
-                            </a>
-
-                           
+                            <a href="@Url.Action("Show", "Bookmark", new { id = bookmark.Id })" class="btn btn-primary btn-sm">Vezi detalii</a>
                         </div>
                     </div>
                 </div>
@@ -46,3 +49,30 @@ else
         </div>
     </div>
 }
+
+<!-- Pagination -->
+<div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" href="@ViewBag.PaginationBaseUrl + 1" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            @for (int i = 1; i <= ViewBag.lastPage; i++)
+            {
+                <li class="page-item @(ViewBag.currentPage == i ? "active" : "")">
+                    <a class="page-link" href="@($"{ViewBag.PaginationBaseUrl}{i}")">@i</a>
+                </li>
+            }
+
+            <!-- Next Page -->
+            <li class="page-item @(ViewBag.currentPage == ViewBag.lastPage ? "disabled" : "")">
+                <a class="page-link" href="@($"{ViewBag.PaginationBaseUrl}{ViewBag.currentPage + 1}")" aria-label="Next">
+                    &raquo;
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

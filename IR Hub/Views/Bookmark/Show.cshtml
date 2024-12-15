@@ -23,20 +23,37 @@
                 </div>
                 <div class="card-footer text-muted">
                     <span>Voturi: @Model.VotesCount | Comentarii: @Model.CommentsCount</span>
-                    @if (ViewBag.AfisareButoane)
-                    {
-                        <div class="float-right">
+                        <div class="d-flex justify-content-between">
+                                <!-- Secțiunea pentru Like și Dislike -->
+                                <div class="d-flex">
+                                    <form asp-action="New" asp-controller="Vote" method="post" class="d-inline me-2">
+                                        <input type="hidden" name="BookmarkId" value="@Model.Id" />
+                                        <input type="hidden" name="UserId" value="@User.FindFirst("sub")?.Value" />
+                                        <button type="submit" name="VoteType" value="Like" class="btn btn-success btn-sm">Like</button>
+                                    </form>
+
+                                    <form asp-action="New" asp-controller="Vote" method="post" class="d-inline">
+                                        <input type="hidden" name="BookmarkId" value="@Model.Id" />
+                                        <input type="hidden" name="UserId" value="@User.FindFirst("sub")?.Value" />
+                                        <button type="submit" name="VoteType" value="Dislike" class="btn btn-danger btn-sm">Dislike</button>
+                                    </form>
+                                </div>
+
                             @if (ViewBag.EsteAdmin || Model.UserId == ViewBag.UserCurent)
                             {
-                                <a class="btn btn-warning btn-sm" href="@Url.Action("Edit", "Bookmark", new { id = Model.Id })">Editează</a>
-                                <form action="@Url.Action("Delete", "Bookmark", new { id = Model.Id })" method="post" style="display:inline;">
-                                    <button type="submit" class="btn btn-danger btn-sm">Șterge</button>
-                                </form>
+                                <!-- Secțiunea pentru Editează și Șterge -->
+                                <div class="d-flex justify-content-end">
+                                    <a class="btn btn-warning btn-sm me-2" href="@Url.Action("Edit", "Bookmark", new { id = Model.Id })">Editează</a>
+                                    <form action="@Url.Action("Delete", "Bookmark", new { id = Model.Id })" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-danger btn-sm">Șterge</button>
+                                    </form>
+                                </div>
                             }
                         </div>
-                    }
+                    
                 </div>
             </div>
+
 
             <!-- Comentarii -->
             <h4>Comentarii (@Model.CommentsCount)</h4>
@@ -53,17 +70,15 @@
             }
 
             <!-- Adaugă comentariu -->
-            @if (User.Identity.IsAuthenticated)
-            {
-                <form method="post" asp-action="Show" asp-controller="Bookmark">
-                    <input type="hidden" name="BookmarkId" value="@Model.Id" />
-                    <div class="form-group">
-                        <label for="CommentContent">Comentariul tău:</label>
-                        <textarea id="CommentContent" name="Content" class="form-control" rows="3" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Adaugă Comentariul</button>
-                </form>
-            }
+            <form asp-action="New" asp-controller="Comment" method="post" class="d-inline me-2">
+                <input type="hidden" name="BookmarkId" value="@Model.Id" />
+                <div class="form-group">
+                     <label for="CommentContent">Comentariul tău:</label>
+                     <textarea id="CommentContent" name="Cont" class="form-control" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Adaugă Comentariul</button>
+            </form>
+
         </div>
     </div>
 </div>

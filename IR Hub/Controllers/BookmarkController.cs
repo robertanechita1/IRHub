@@ -26,7 +26,7 @@ namespace IR_Hub.Controllers
 
         // Se afiseaza lista tuturor articolelor 
         // Pentru fiecare articol se afiseaza si userul care a postat articolul respectiv
-        // [HttpGet] care se executa implicit
+        // [HttpGet] se executa implicit
         public IActionResult Index(string sortOrder = "popular")
         {
             var bookmarks = db.Bookmarks.Include("User");
@@ -57,8 +57,60 @@ namespace IR_Hub.Controllers
                 ViewBag.Alert = TempData["messageType"];
             }
 
+            var search = HttpContext.Request.Query["search"].ToString().Trim();
+            if (!string.IsNullOrEmpty(search))
+            {
+                // Căutare în bookmarks (Title, Description, Media_Content)
+                var bookmarkId = db.Bookmarks
+                                    .Where(b => b.Title.Contains(search) ||
+                                                b.Description.Contains(search) ||
+                                                b.Media_Content.Contains(search))
+                                    .Select(b => b.Id)
+                                    .ToList();
+
+                // Căutare în comentarii
+                var bookmarkIds_Comments = db.Comments
+                                                              .Where(c => c.Content.Contains(search))
+                                                              .Select(c => (int)c.BookmarkId)
+                                                              .ToList();
+
+                // Unim ID-urile relevante
+                var mergedIds = bookmarkId.Union(bookmarkIds_Comments).ToList();
+                bookmarks = bookmarks.Where(b => mergedIds.Contains(b.Id));
+            }
+
+            int perPage = 9;
+            int totalItems = bookmarks.Count();
+            int currentPage = 1;
+
+            if (!string.IsNullOrEmpty(HttpContext.Request.Query["page"]) &&
+                int.TryParse(HttpContext.Request.Query["page"], out int pageNumber) &&
+                pageNumber > 0)
+            {
+                currentPage = pageNumber;
+            }
+
+            int offset = (currentPage - 1) * perPage;
+            var paginatedBookmarks = bookmarks.Skip(offset).Take(perPage).ToList();
+
+            // Setăm variabilele pentru View
+            ViewBag.Bookmarks = paginatedBookmarks;
+            ViewBag.lastPage = Math.Ceiling((double)totalItems / perPage);
+            ViewBag.PaginationBaseUrl = $"/Bookmarks/Index?sortOrder={sortOrder}&search={search}&page=";
+            ViewBag.SearchString = search;
+
+
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.Message = TempData["message"];
+                ViewBag.Alert = TempData["messageType"];
+            }
+
             return View();
         }
+
+
+
 
         // Se afiseaza un singur articol in functie de id-ul si toate comentariile asociate si user ul
         // [HttpGet] se executa implicit implicit
@@ -76,37 +128,6 @@ namespace IR_Hub.Controllers
         }
 
 
-        // adaugarea unui comentariu asociat unui articol in baza de date
-        // doar cei conectati
-        [HttpPost]
-        //[Authorize(Roles = "User,Admin")]
-        public IActionResult Show([FromForm] Comment comment)
-        {
-            comment.Date_created = DateTime.Now;
-
-            comment.UserId = _userManager.GetUserId(User);
-
-            if (ModelState.IsValid)
-            {
-                db.Comments.Add(comment);
-                db.SaveChanges();
-                return Redirect("/Bookmarks/Show/" + comment.BookmarkId);
-            }
-            else
-            {
-                Bookmark bookmark = db.Bookmarks.Include("User")
-                                         .Include("Comments")
-                                         .Include("Comments.User")
-                               .Where(bookmark => bookmark.Id == comment.BookmarkId)
-                               .First();
-
-              //  return Redirect("/Bookmark/Show/" + comment.BookmarkId);
-
-                SetAccessRights(comment.UserId);
-
-                return View(bookmark);
-            }
-        }
 
 
         // [HttpGet] - care se executa implicit

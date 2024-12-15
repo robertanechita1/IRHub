@@ -3,6 +3,7 @@ using IR_Hub.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IR_Hub.Controllers
 {
@@ -25,51 +26,85 @@ namespace IR_Hub.Controllers
 
         // Adaugarea unui vot asociat unui articol in baza de date
         [HttpPost]
-        public IActionResult New(Vote vot)
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult New(int bookmarkId, string voteType)
         {
-            vot.Date_Voted = DateTime.Now;
-
-            // FACUT TIP VOT (LIKE DISLIKE)
-
-            if (ModelState.IsValid)
+            // Obtinem utilizatorul curent
+            var userId = _userManager.GetUserId(User);
+            if (userId == null)
             {
-                db.Votes.Add(vot);
-                db.SaveChanges();
-                return Redirect("/Bookmars/Show/" + vot.BookmarkId);
+                return Unauthorized();
             }
 
-            else
+            // Gasim bookmark-ul asociat
+            var bookmark = db.Bookmarks.Include(b => b.Votes).FirstOrDefault(b => b.Id == bookmarkId);
+            if (bookmark == null)
             {
-                return Redirect("/Bookmarks/Show/" + vot.BookmarkId);
+                return NotFound();
             }
 
+            // Verificam daca utilizatorul a votat deja
+            var existingVote = bookmark.Votes.FirstOrDefault(v => v.UserId == userId);
+            if (existingVote != null)
+            {
+                if (existingVote.Type == voteType)
+                {
+                    bookmark.VotesCount--;
+                    db.Votes.Remove(existingVote);
+                    db.SaveChanges();
+                    return RedirectToAction("Show", "Bookmark", new { id = bookmarkId });
+                }
+                else
+                {
+
+                    bookmark.VotesCount--;
+                    db.Votes.Remove(existingVote);
+                    db.SaveChanges();
+                }
+            }
+
+            var vot = new Vote
+            {
+                Date_Voted = DateTime.Now,
+                UserId = userId,
+                Type = voteType == "Like" ? "Like" : "Dislike",
+                BookmarkId = bookmarkId
+            };
+            db.Votes.Add(vot);
+
+            bookmark.VotesCount++;
+            db.Entry(bookmark).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return RedirectToAction("Show", "Bookmark", new { id = bookmarkId });
         }
 
 
-
-
         // Stergerea unui vot asociat unui articol din baza de date
-        // Se poate sterge comentariul doar de catre userii cu rolul de Admin 
-        // sau de catre utilizatorii cu rolul de User doar daca acel comentariu a fost postat de catre acestia
 
         [HttpPost]
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User")]
         public IActionResult Delete(int id)
         {
-            Vote vot = db.Votes.Find(id);
 
-            if (vot.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            var vot = db.Votes.Include(v => v.Bookmark).FirstOrDefault(v => v.Id == id);
+            if (vot == null)
             {
-                db.Votes.Remove(vot);
-                db.SaveChanges();
-                return Redirect("/Bookmarks/Show/" + vot.BookmarkId);
+                return NotFound();
             }
-            else
+
+            if (vot.UserId != _userManager.GetUserId(User))
             {
                 TempData["message"] = "Nu aveti dreptul sa anulati votul";
                 TempData["messageType"] = "alert-danger";
                 return RedirectToAction("Index", "Bookmarks");
             }
+
+            vot.Bookmark.VotesCount--;
+            db.Votes.Remove(vot);
+            db.SaveChanges();
+
+            return RedirectToAction("Show", "Bookmark", new { id = vot.BookmarkId });
         }
 
     }

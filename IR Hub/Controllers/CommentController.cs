@@ -3,6 +3,7 @@ using IR_Hub.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IR_Hub.Controllers
 {
@@ -23,30 +24,49 @@ namespace IR_Hub.Controllers
             _userManager = userManager;
             _roleManager = roleManager;
         }
-        
-        
+
+
         // Adaugarea unui comentariu asociat unui articol in baza de date
         [HttpPost]
-        public IActionResult New(Comment comm)
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult New(int bookmarkId, string Cont)
         {
-            comm.Date_created = DateTime.Now;
-
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
+                var userId = _userManager.GetUserId(User);
+                if (userId == null)
+                {
+                    return Unauthorized();
+                }
+
+                var bookmark = db.Bookmarks.Include(b => b.Votes).FirstOrDefault(b => b.Id == bookmarkId);
+
+                var comm = new Comment
+                {
+                    Date_created = DateTime.Now,
+                    Date_updated = DateTime.Now,
+                    UserId = userId,
+                    Content = Cont,
+                    BookmarkId = bookmarkId
+                };
+
                 db.Comments.Add(comm);
                 db.SaveChanges();
-                return Redirect("/Bookmarks/Show/" + comm.BookmarkId);
-            }
+                bookmark.CommentsCount++;
+                db.Entry(bookmark).State = EntityState.Modified;
+                db.SaveChanges();
 
+                return RedirectToAction("Show", "Bookmark", new { id = bookmarkId });
+            }
             else
             {
-                return Redirect("/Bookmarks/Show/" + comm.BookmarkId);
+                return RedirectToAction("Show", "Bookmark", new { id = bookmarkId });
             }
 
         }
 
-        
-        
+
+
 
 
         // Stergerea unui comentariu asociat unui articol din baza de date
@@ -63,7 +83,7 @@ namespace IR_Hub.Controllers
             {
                 db.Comments.Remove(comm);
                 db.SaveChanges();
-                return Redirect("/Bookmarks/Show/" + comm.BookmarkId);
+                return RedirectToAction("Show/Bookmark", new { id = comm.BookmarkId });
             }
             else
             {
@@ -80,12 +100,12 @@ namespace IR_Hub.Controllers
         // Se poate edita un comentariu doar de catre utilizatorul care a postat comentariul respectiv 
         // Adminii pot edita orice comentariu, chiar daca nu a fost postat de ei
 
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User")]
         public IActionResult Edit(int id)
         {
             Comment comm = db.Comments.Find(id);
 
-            if (comm.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            if (comm.UserId == _userManager.GetUserId(User))
             {
                 return View(comm);
             }
@@ -98,12 +118,12 @@ namespace IR_Hub.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User")]
         public IActionResult Edit(int id, Comment requestComment)
         {
             Comment comm = db.Comments.Find(id);
 
-            if (comm.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            if (comm.UserId == _userManager.GetUserId(User))
             {
                 if (ModelState.IsValid)
                 {
@@ -112,7 +132,7 @@ namespace IR_Hub.Controllers
 
                     db.SaveChanges();
 
-                    return Redirect("/Bookmarks/Show/" + comm.BookmarkId);
+                    return RedirectToAction("Show", "Bookmark", new { id = requestComment.BookmarkId });
                 }
                 else
                 {

@@ -1,0 +1,21 @@
+﻿@model IR_Hub.Models.Vote
+
+@{
+    ViewData["Title"] = "New Vote";
+}
+
+<div>
+    <form asp-action="New" asp-controller="Vote" method="post">
+        <input type="hidden" asp-for="BookmarkId" />
+        <input type="hidden" asp-for="UserId" />
+
+        <button type="submit" name="VoteType" value="Like" class="btn btn-success">
+            Like
+        </button>
+
+        <button type="submit" name="VoteType" value="Dislike" class="btn btn-danger">
+            Dislike
+        </button>
+    </form>
+</div>
+

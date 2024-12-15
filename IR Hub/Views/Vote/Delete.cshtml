@@ -1,0 +1,24 @@
+﻿@model IR_Hub.Models.Vote
+
+@{
+    ViewData["Title"] = "Delete Vote";
+}
+
+<h2>Delete Your Vote</h2>
+
+<div>
+    <form asp-action="Delete" asp-controller="Vote" method="post">
+        <input type="hidden" asp-for="BookmarkId" />
+        <input type="hidden" asp-for="UserId" />
+
+
+        <button type="submit" name="VoteType" value="Like" class="btn btn-warning">
+            Delete Like
+        </button>
+
+
+        <button type="submit" name="VoteType" value="Dislike" class="btn btn-warning">
+            Delete Dislike
+        </button>
+    </form>
+</div>
