@@ -25,6 +25,16 @@ namespace IR_Hub.Controllers
             _roleManager = roleManager;
         }
 
+        [HttpGet]
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult New(int bookmarkId)
+        {
+            var comment = new Comment
+            {
+                BookmarkId = bookmarkId
+            };
+            return View(comment);
+        }
 
         // Adaugarea unui comentariu asociat unui articol in baza de date
         [HttpPost]

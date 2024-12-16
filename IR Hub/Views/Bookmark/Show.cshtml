@@ -70,13 +70,13 @@
             }
 
             <!-- Adaugă comentariu -->
-            <form asp-action="New" asp-controller="Comment" method="post" class="d-inline me-2">
+            <form asp-action="Show" asp-controller="Bookmark" method="post" class="d-inline me-2">
                 <input type="hidden" name="BookmarkId" value="@Model.Id" />
                 <div class="form-group">
                      <label for="CommentContent">Comentariul tău:</label>
                      <textarea id="CommentContent" name="Cont" class="form-control" rows="3" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Adaugă Comentariul</button>
+                <button type="submit" class="btn btn-primary">Adaugă Comentariu</button>
             </form>
 
         </div>

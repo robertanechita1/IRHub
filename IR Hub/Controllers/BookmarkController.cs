@@ -24,8 +24,7 @@ namespace IR_Hub.Controllers
             _roleManager = roleManager;
         }
 
-        // Se afiseaza lista tuturor articolelor 
-        // Pentru fiecare articol se afiseaza si userul care a postat articolul respectiv
+        
         // [HttpGet] se executa implicit
         public IActionResult Index(string sortOrder = "popular")
         {
@@ -112,7 +111,7 @@ namespace IR_Hub.Controllers
 
 
 
-        // Se afiseaza un singur articol in functie de id-ul si toate comentariile asociate si user ul
+        //  un singur articol in functie de id-ul si toate comentariile asociate si user ul
         // [HttpGet] se executa implicit implicit
         public IActionResult Show(int id)
         {
@@ -122,9 +121,48 @@ namespace IR_Hub.Controllers
                               .Where(bk => bk.Id == id)
                               .First();
 
-            SetAccessRights(bookmark.UserId);
+            SetAccessRights(bookmark.UserId); // poate sa afisam vote si adauga comm doar la logati?
 
             return View(bookmark);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult Show(int BookmarkId, string Cont)
+        {
+            var comment = new Comment
+            {
+                BookmarkId = BookmarkId,
+                Content = Cont,
+                Date_created = DateTime.Now,
+                UserId = _userManager.GetUserId(User)
+            };
+
+            if (ModelState.IsValid)
+            {
+                Bookmark b = db.Bookmarks.Include("User")
+                                         .Include("Comments")
+                                         .Include("Comments.User")
+                                         .Where(b => b.Id == BookmarkId)
+                                         .First();
+                db.Comments.Add(comment);
+                db.SaveChanges();
+                b.CommentsCount++;//de ce nu s amodificat in  baza de date?
+                b.Comments.Add(comment);
+                return Redirect("/Bookmark/Show/" + BookmarkId);
+            }
+            else
+            {
+                Bookmark b = db.Bookmarks.Include("User")
+                                         .Include("Comments")
+                                         .Include("Comments.User")
+                                         .Where(b => b.Id == BookmarkId)
+                                         .First();
+                //aici trebuie sa adaug si la comentariile unui user
+                SetAccessRights(b.UserId);
+
+                return View(b);
+            }
         }
 
 
@@ -173,11 +211,6 @@ namespace IR_Hub.Controllers
             }
         }
 
-        
-        // Doar utilizatorii cu rolul de User si Admin pot edita articole
-        // Adminii pot edita orice articol din baza de date
-        // Userii pot edita doar articolele proprii (cele pe care ei le-au postat)
-        // [HttpGet] - se executa implicit
 
         [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id)
@@ -203,7 +236,7 @@ namespace IR_Hub.Controllers
         }
 
         // Se adauga articolul modificat in baza de date
-        // Se verifica rolul utilizatorilor care au dreptul sa editeze (Editor si Admin)
+        // Se verifica rolul utilizatorilor care au dreptul sa editeze
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id, Bookmark requestBookmark)
@@ -229,9 +262,7 @@ namespace IR_Hub.Controllers
         }
 
 
-        // Utilizatorii cu rolul de User sau Admin pot sterge articole
-        // Userii pot sterge doar articolele publicate de ei
-        // Adminii pot sterge orice articol de baza de date
+     
 
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
@@ -296,7 +327,7 @@ namespace IR_Hub.Controllers
             ViewBag.EsteAdmin = User.IsInRole("Admin");
         }
 
-        [NonAction]
+        /*[NonAction]
         public IEnumerable<SelectListItem> GetAllCategories()
         {
             // generam o lista de tipul SelectListItem fara elemente
@@ -319,7 +350,7 @@ namespace IR_Hub.Controllers
 
             // returnam lista de categorii
             return selectList;
-        }
+        }*/
 
     }
 }
