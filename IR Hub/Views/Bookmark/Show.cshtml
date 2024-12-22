@@ -65,9 +65,20 @@
                         <h5 class="mt-0">@comment.User.UserName</h5>
                         <p>@comment.Content</p>
                         <small>@comment.Date_created.ToString("dd/MM/yyyy HH:mm")</small>
-                    </div>
+                        <div class="d-flex justify-content-end">
+                        @if (comment.UserId == ViewBag.UserCurent) 
+                        {
+                            <div class="mt-2">
+                                <a asp-controller="Bookmark" asp-action="EditComment" asp-route-id="@comment.Id" class="btn btn-sm btn-primary">Edit</a>
+                                <a asp-controller="Bookmark" asp-action="DeleteComment" asp-route-id="@comment.Id" class="btn btn-sm btn-danger" method="post">Delete</a>
+                            </div>
+                        }
+                        </div>
+                        
+                    </div> 
                 </div>
             }
+
 
             <!-- Adaugă comentariu -->
             <form asp-action="Show" asp-controller="Bookmark" method="post" class="d-inline me-2">

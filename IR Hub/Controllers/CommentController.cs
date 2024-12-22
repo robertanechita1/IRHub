@@ -36,48 +36,6 @@ namespace IR_Hub.Controllers
             return View(comment);
         }
 
-        // Adaugarea unui comentariu asociat unui articol in baza de date
-        [HttpPost]
-        [Authorize(Roles = "User,Admin")]
-        public IActionResult New(int bookmarkId, string Cont)
-        {
-            if (ModelState.IsValid)
-            {
-                var userId = _userManager.GetUserId(User);
-                if (userId == null)
-                {
-                    return Unauthorized();
-                }
-
-                var bookmark = db.Bookmarks.Include(b => b.Votes).FirstOrDefault(b => b.Id == bookmarkId);
-
-                var comm = new Comment
-                {
-                    Date_created = DateTime.Now,
-                    Date_updated = DateTime.Now,
-                    UserId = userId,
-                    Content = Cont,
-                    BookmarkId = bookmarkId
-                };
-
-                db.Comments.Add(comm);
-                db.SaveChanges();
-                bookmark.CommentsCount++;
-                db.Entry(bookmark).State = EntityState.Modified;
-                db.SaveChanges();
-
-                return RedirectToAction("Show", "Bookmark", new { id = bookmarkId });
-            }
-            else
-            {
-                return RedirectToAction("Show", "Bookmark", new { id = bookmarkId });
-            }
-
-        }
-
-
-
-
 
         // Stergerea unui comentariu asociat unui articol din baza de date
         // Se poate sterge comentariul doar de catre userii cu rolul de Admin 

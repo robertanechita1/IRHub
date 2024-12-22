@@ -1,0 +1,20 @@
+﻿@model IR_Hub.Models.Comment
+
+@{
+    ViewData["Title"] = "Delete Comment";
+}
+
+<h2>Sterge comentariul facut</h2>
+
+<div>
+    <form asp-action="DeleteComment" asp-controller="Bookmark" method="post">
+        <input type="hidden" asp-for="BookmarkId" />
+        <input type="hidden" asp-for="UserId" />
+
+
+        <button type="submit" name="Delete" class="btn btn-warning">
+            Sterge Comentariu
+        </button>
+
+    </form>
+</div>

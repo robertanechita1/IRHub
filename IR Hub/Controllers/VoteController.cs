@@ -24,7 +24,7 @@ namespace IR_Hub.Controllers
         }
 
 
-        // Adaugarea unui vot asociat unui articol in baza de date
+        // Adaugarea unui vot asociat unui bookmark in baza de date
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
         public IActionResult New(int bookmarkId, string voteType)
@@ -82,30 +82,30 @@ namespace IR_Hub.Controllers
 
         // Stergerea unui vot asociat unui articol din baza de date
 
-        [HttpPost]
-        [Authorize(Roles = "User")]
-        public IActionResult Delete(int id)
-        {
+        //[HttpPost]
+        //[Authorize(Roles = "User")]
+        //public IActionResult Delete(int id)
+        //{
 
-            var vot = db.Votes.Include(v => v.Bookmark).FirstOrDefault(v => v.Id == id);
-            if (vot == null)
-            {
-                return NotFound();
-            }
+        //    var vot = db.Votes.Include(v => v.Bookmark).FirstOrDefault(v => v.Id == id);
+        //    if (vot == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (vot.UserId != _userManager.GetUserId(User))
-            {
-                TempData["message"] = "Nu aveti dreptul sa anulati votul";
-                TempData["messageType"] = "alert-danger";
-                return RedirectToAction("Index", "Bookmarks");
-            }
+        //    if (vot.UserId != _userManager.GetUserId(User))
+        //    {
+        //        TempData["message"] = "Nu aveti dreptul sa anulati votul";
+        //        TempData["messageType"] = "alert-danger";
+        //        return RedirectToAction("Index", "Bookmarks");
+        //    }
 
-            vot.Bookmark.VotesCount--;
-            db.Votes.Remove(vot);
-            db.SaveChanges();
+        //    vot.Bookmark.VotesCount--;
+        //    db.Votes.Remove(vot);
+        //    db.SaveChanges();
 
-            return RedirectToAction("Show", "Bookmark", new { id = vot.BookmarkId });
-        }
+        //    return RedirectToAction("Show", "Bookmark", new { id = vot.BookmarkId });
+        //}
 
     }
 }

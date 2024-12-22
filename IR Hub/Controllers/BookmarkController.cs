@@ -166,6 +166,85 @@ namespace IR_Hub.Controllers
         }
 
 
+        [HttpPost]
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult DeleteComment(int id)
+        {
+            Comment comm = db.Comments.Find(id);
+
+            if (comm == null)
+            {
+                TempData["message"] = "Comentariul nu există.";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index", "Bookmarks");
+            }
+
+            if (comm.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                int bookmarkId = comm.BookmarkId;
+                db.Comments.Remove(comm);
+                db.SaveChanges();
+                return RedirectToAction("Show","Bookmark", new { id = bookmarkId });
+            }
+            else
+            {
+                TempData["message"] = "Nu aveți dreptul să ștergeți comentariul.";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index", "Bookmarks");
+            }
+        }
+
+
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult EditComment(int id)
+        {
+            Comment comm = db.Comments.Find(id);
+
+            if (comm == null)
+            {
+                TempData["message"] = "Comentariul nu există.";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index", "Bookmarks", id);
+            }
+
+            if (comm.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                return View("EditComment", comm); // Specifică view-ul care editează comentariul
+            }
+            else
+            {
+                TempData["message"] = "Nu aveți dreptul să editați comentariul.";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index", "Bookmarks", id);
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult EditComment(int id, Comment updatedComment)
+        {
+            Comment comm = db.Comments.Find(id);
+
+            if (comm == null)
+            {
+                TempData["message"] = "Comentariul nu există.";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Show", "Bookmarks");
+            }
+
+            if (comm.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                comm.Content = updatedComment.Content; // Actualizează conținutul comentariului
+                db.SaveChanges();
+                return RedirectToAction("Show","Bookmark", new { id = comm.BookmarkId });
+            }
+            else
+            {
+                TempData["message"] = "Nu aveți dreptul să editați comentariul.";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Show", "Bookmarks");
+            }
+        }
 
 
         // [HttpGet] - care se executa implicit
