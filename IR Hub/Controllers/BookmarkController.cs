@@ -56,10 +56,12 @@ namespace IR_Hub.Controllers
                 ViewBag.Alert = TempData["messageType"];
             }
 
+            //MOTOR DE CAUTARE
+
             var search = HttpContext.Request.Query["search"].ToString().Trim();
             if (!string.IsNullOrEmpty(search))
             {
-                // Căutare în bookmarks (Title, Description, Media_Content)
+                // Cautare in bookmarks
                 var bookmarkId = db.Bookmarks
                                     .Where(b => b.Title.Contains(search) ||
                                                 b.Description.Contains(search) ||
@@ -67,7 +69,7 @@ namespace IR_Hub.Controllers
                                     .Select(b => b.Id)
                                     .ToList();
 
-                // Căutare în comentarii
+                // Cautare in comentarii
                 var bookmarkIds_Comments = db.Comments
                                                               .Where(c => c.Content.Contains(search))
                                                               .Select(c => (int)c.BookmarkId)
@@ -92,7 +94,7 @@ namespace IR_Hub.Controllers
             int offset = (currentPage - 1) * perPage;
             var paginatedBookmarks = bookmarks.Skip(offset).Take(perPage).ToList();
 
-            // Setăm variabilele pentru View
+            // Setam variabilele pentru View
             ViewBag.Bookmarks = paginatedBookmarks;
             ViewBag.lastPage = Math.Ceiling((double)totalItems / perPage);
             ViewBag.PaginationBaseUrl = $"/Bookmarks/Index?sortOrder={sortOrder}&search={search}&page=";
@@ -116,19 +118,25 @@ namespace IR_Hub.Controllers
         public IActionResult Show(int id)
         {
             Bookmark bookmark = db.Bookmarks.Include("Comments")
-                                         .Include("User")
-                                         .Include("Comments.User")
-                              .Where(bk => bk.Id == id)
-                              .First();
+                                             .Include("User")
+                                             .Include("Comments.User")
+                                             .FirstOrDefault(bk => bk.Id == id);
 
-            SetAccessRights(bookmark.UserId); // poate sa afisam vote si adauga comm doar la logati?
+            if (bookmark == null)
+            {
+                TempData["message"] = "Marcajul specificat nu există.";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index", "Bookmark");
+            }
 
+            SetAccessRights(bookmark.UserId);
             return View(bookmark);
         }
 
+
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
-        public IActionResult Show(int BookmarkId, string Cont)
+        public IActionResult NewComment(int BookmarkId, string Cont)
         {
             var comment = new Comment
             {
@@ -149,6 +157,7 @@ namespace IR_Hub.Controllers
                 db.SaveChanges();
                 b.CommentsCount++;//de ce nu s amodificat in  baza de date?
                 b.Comments.Add(comment);
+                db.SaveChanges();
                 return Redirect("/Bookmark/Show/" + BookmarkId);
             }
             else
@@ -166,25 +175,32 @@ namespace IR_Hub.Controllers
         }
 
 
-        [HttpPost]
-        [Authorize(Roles = "User,Admin")]
-        public IActionResult DeleteComment(int id)
-        {
-            Comment comm = db.Comments.Find(id);
 
-            if (comm == null)
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult DeleteComment(int BookmarkId, int id)
+        {
+            Comment comm = db.Comments.Include(c => c.Bookmark)
+                                      .FirstOrDefault(c => c.Id == id);
+
+            Bookmark b = db.Bookmarks.Include("User")
+                         .Include("Comments")
+                         .Include("Comments.User")
+                         .FirstOrDefault(b => b.Id == BookmarkId); // Folosește doar FirstOrDefault
+            if (b == null)
             {
-                TempData["message"] = "Comentariul nu există.";
+                TempData["message"] = "Marcajul specificat nu există.";
                 TempData["messageType"] = "alert-danger";
-                return RedirectToAction("Index", "Bookmarks");
+                return RedirectToAction("Index", "Bookmark");
             }
 
+            // Verifică drepturile utilizatorului
             if (comm.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
             {
-                int bookmarkId = comm.BookmarkId;
                 db.Comments.Remove(comm);
+                b.CommentsCount--;
+                b.Comments.Remove(comm);
                 db.SaveChanges();
-                return RedirectToAction("Show","Bookmark", new { id = bookmarkId });
+                return RedirectToAction("Show", "Bookmark", new { id = BookmarkId });
             }
             else
             {

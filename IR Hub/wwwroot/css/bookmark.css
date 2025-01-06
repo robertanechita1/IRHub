@@ -1,0 +1,116 @@
+﻿/* CSS pentru design inspirat din imagine */
+
+body {
+    background-color: #f7f2ed;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+.card {
+    border-radius: 15px;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    padding: 20px;
+}
+
+    .card-body h3 {
+        font-size: 1.8rem;
+        color: #5a463a;
+        margin-bottom: 10px;
+    }
+
+    .card-body small {
+        display: block;
+        color: #999;
+        margin-bottom: 10px;
+    }
+
+.card-footer {
+    background-color: #f7f2ed;
+    border-top: 1px solid #ddd;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .card-footer span {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+.btn-success, .btn-danger {
+    border-radius: 15px;
+    padding: 5px 15px;
+    font-size: 0.9rem;
+}
+
+.btn-warning {
+    background-color: #f0ad4e;
+    border: none;
+    border-radius: 15px;
+    padding: 5px 15px;
+    font-size: 0.9rem;
+}
+
+.media {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+    .media img {
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+.media-body {
+    font-size: 0.9rem;
+}
+
+    .media-body h5 {
+        font-size: 1rem;
+        color: #5a463a;
+        margin-bottom: 5px;
+    }
+
+textarea.form-control {
+    border-radius: 15px;
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+button.btn-primary {
+    background-color: #5a463a;
+    border: none;
+    border-radius: 15px;
+    padding: 10px 20px;
+}
+
+    button.btn-primary:hover {
+        background-color: #47382e;
+    }
+
+/* Secțiunea de comentarii */
+form {
+    margin-top: 20px;
+}
+
+    form .form-group label {
+        font-weight: bold;
+    }
+
+.d-flex {
+    gap: 10px;
+}
+
+    .d-flex .btn {
+        font-size: 0.8rem;
+    }
