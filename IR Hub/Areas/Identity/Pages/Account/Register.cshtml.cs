@@ -114,6 +114,7 @@ namespace IR_Hub.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+                user.Role = "User";
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -125,6 +126,7 @@ namespace IR_Hub.Areas.Identity.Pages.Account
 
                     //pasul 9 useri si roluri -- adaugarea rolului de user la inregistrare
                     await _userManager.AddToRoleAsync(user, "User");
+                    
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

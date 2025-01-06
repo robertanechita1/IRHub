@@ -1,0 +1,47 @@
+﻿@model IR_Hub.Models.Category
+
+<br />
+
+<h2 class="mb-5 text-center">Adăugare Categorie</h2>
+
+<br />
+
+<form asp-action="New" asp-controller="Category" method="post">
+    
+    <label asp-for="Name">Denumire colectie</label>
+    <br />
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+    <br />
+    <br />
+
+    
+    <label asp-for="visibility">Selectati daca doriti o colectie publica</label>
+    <br />
+    <input asp-for="visibility" type="checkbox" class="form-check-input" />
+    <span asp-validation-for="visibility" class="text-danger"></span>
+    <br />
+    <br />
+
+    
+    <label asp-for="Description">Descriere colectie</label>
+    <br />
+    <textarea asp-for="Description" class="form-control"></textarea>
+    <span asp-validation-for="Description" class="text-danger"></span>
+    <br />
+    <br />
+
+    <button type="submit" class="btn btn-success">Adauga Categorie</button>
+</form>
+
+<!-- afisarea erorilor  -->
+<form asp-action="New" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+</form>
+
+@if (TempData["message"] != null)
+{
+    <div class="alert @TempData["messageType"]">
+        @TempData["message"]
+    </div>
+}

@@ -25,6 +25,8 @@ namespace IR_Hub.Controllers
             _roleManager = roleManager;
         }
 
+        //adaugarea unui comentariu dar nu se foloseste
+
         [HttpGet]
         [Authorize(Roles = "User,Admin")]
         public IActionResult New(int bookmarkId)
@@ -36,10 +38,44 @@ namespace IR_Hub.Controllers
             return View(comment);
         }
 
+       
+        [HttpPost]
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult New(int bookmarkId, string Cont)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = _userManager.GetUserId(User);
+                if (userId == null)
+                {
+                    return Unauthorized();
+                }
 
-        // Stergerea unui comentariu asociat unui articol din baza de date
-        // Se poate sterge comentariul doar de catre userii cu rolul de Admin 
-        // sau de catre utilizatorii cu rolul de User doar daca acel comentariu a fost postat de catre acestia
+                var bookmark = db.Bookmarks.Include(b => b.Votes).FirstOrDefault(b => b.Id == bookmarkId);
+
+                var comm = new Comment
+                {
+                    Date_created = DateTime.Now,
+                    Date_updated = DateTime.Now,
+                    UserId = userId,
+                    Content = Cont,
+                    BookmarkId = bookmarkId
+                };
+
+                db.Comments.Add(comm);
+                db.SaveChanges();
+                bookmark.CommentsCount++;
+                db.Entry(bookmark).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return RedirectToAction("Show", "Bookmark", new { id = bookmarkId });
+            }
+            else
+            {
+                return RedirectToAction("Show", "Bookmark", new { id = bookmarkId });
+            }
+
+        }
 
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
@@ -61,14 +97,12 @@ namespace IR_Hub.Controllers
             }
         }
 
-        // In acest moment vom implementa editarea intr-o pagina View separata
-        // Se editeaza un comentariu existent
-        // Editarea unui comentariu asociat unui articol
-        // [HttpGet] - se executa implicit
-        // Se poate edita un comentariu doar de catre utilizatorul care a postat comentariul respectiv 
-        // Adminii pot edita orice comentariu, chiar daca nu a fost postat de ei
+        
+        //editarea unui comm 
+        // [HttpGet] implicit
+        
 
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id)
         {
             Comment comm = db.Comments.Find(id);
@@ -85,8 +119,9 @@ namespace IR_Hub.Controllers
             }
         }
 
+        //editarea unui comm dupa ce am primit noul continut
         [HttpPost]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id, Comment requestComment)
         {
             Comment comm = db.Comments.Find(id);

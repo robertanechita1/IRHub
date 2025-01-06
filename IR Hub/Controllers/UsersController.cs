@@ -117,40 +117,33 @@ namespace ArticlesApp.Controllers
                          .First();
 
             // Delete user comments
-            if (user.Comments.Count > 0)
+            
+            var comments = db.Comments.Where(u => u.UserId == id); 
+            foreach (var comment in comments)
             {
-                foreach (var comment in user.Comments)
-                {
-                    db.Comments.Remove(comment);
-                }
+                  db.Comments.Remove(comment);
             }
 
             //Delete user votes
-            if (user.Votes.Count > 0)
+            var votes = db.Votes.Where(u => u.UserId == id);
+            foreach (var vote in votes)
             {
-                foreach (var vote in user.Votes)
-                {
-                    db.Votes.Remove(vote);
-                }
+                db.Votes.Remove(vote);
             }
 
             // Delete user bookmarks
-            if (user.Bookmarks.Count > 0)
+            var bookmarks = db.Bookmarks.Where(u => u.UserId == id);
+            foreach (var bookmark in bookmarks)
             {
-                foreach (var bookmark in user.Bookmarks)
-                {
-                    db.Bookmarks.Remove(bookmark);
-                }
+                db.Bookmarks.Remove(bookmark);
             }
 
             // Delete user categories
-            /*if (user.Categories.Count > 0)
+            var categories = db.Categories.Where(u => u.UserId == id);
+            foreach (var category in categories)
             {
-                foreach (var cat in user.Categories)
-                {
-                    db.Categories.Remove(cat);
-                }
-            }*/
+                db.Categories.Remove(category);
+            }
 
             db.Users.Remove(user);
 
