@@ -6,12 +6,13 @@ namespace IR_Hub.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public bool visibility { get; set; }
-        public string UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public string? UserId { get; set; }
+        
+//        public User? User { get; set; }
 
         public DateTime Date_created { get; set; } = DateTime.Now;
         public DateTime Date_updated { get; set; } = DateTime.Now;

@@ -37,6 +37,35 @@
                                         <input type="hidden" name="UserId" value="@User.FindFirst("sub")?.Value" />
                                         <button type="submit" name="VoteType" value="Dislike" class="btn btn-danger btn-sm">Dislike</button>
                                     </form>
+                                    <form asp-action="AddCategory" asp-controller="Bookmark" method="post" class="d-inline">
+                                        <input type="hidden" name="BookmarkId" value="@Model.Id" />
+                                        <div>
+                                            <select name="CategoryId" id = "categSelect" class="form-control">
+                                        <option value=""  selected hidden>Save</option>
+                                                @foreach (var categ in ViewBag.UserCategories)
+                                                {
+                                                    <option value="@categ.Id">@categ.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div>
+                                        <button id="addButton" type="submit" class="btn btn-success ms-2" style="display: none;">+</button>
+
+                                        </div> 
+                                    </form>
+                                    <script>
+                                        const categorySelect = document.getElementById('categSelect');
+                                        const addButton = document.getElementById('addButton');
+                                        document.getElementById('categSelect').addEventListener('change', function () {
+                                            if (this.value) {
+                                                // daca e selectata o optiune, apare +
+                                                addButton.style.display = 'inline-block';
+                                            } 
+                                            else {
+                                                addButton.style.display = 'none';
+                                            }
+                                        });
+                                    </script>
                                 </div>
 
                             @if (ViewBag.EsteAdmin || Model.UserId == ViewBag.UserCurent)

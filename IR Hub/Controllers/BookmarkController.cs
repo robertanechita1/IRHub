@@ -26,6 +26,7 @@ namespace IR_Hub.Controllers
 
         
         // [HttpGet] se executa implicit
+        //afisarea tuturor bookmarks urilor
         public IActionResult Index(string sortOrder = "popular")
         {
             var bookmarks = db.Bookmarks.Include("User");
@@ -111,8 +112,9 @@ namespace IR_Hub.Controllers
 
 
 
-        //  un singur articol in functie de id-ul si toate comentariile asociate si user ul
-        // [HttpGet] se executa implicit implicit
+        // afisarea unui singur articol in functie de id-ul si toate comentariile asociate si user ul
+        // [HttpGet]  implicit
+    
         public IActionResult Show(int id)
         {
             Bookmark bookmark = db.Bookmarks.Include("Comments")
@@ -120,12 +122,16 @@ namespace IR_Hub.Controllers
                                          .Include("Comments.User")
                               .Where(bk => bk.Id == id)
                               .First();
+            ViewBag.UserCategories = db.Categories
+                                      .Where(b => b.UserId == _userManager.GetUserId(User))
+                                      .ToList();
 
             SetAccessRights(bookmark.UserId); // poate sa afisam vote si adauga comm doar la logati?
 
             return View(bookmark);
         }
 
+        //afisarea bookmark unui dupa ce am primit continutul unui comentariu
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
         public IActionResult Show(int BookmarkId, string Cont)
@@ -146,9 +152,9 @@ namespace IR_Hub.Controllers
                                          .Where(b => b.Id == BookmarkId)
                                          .First();
                 db.Comments.Add(comment);
-                db.SaveChanges();
-                b.CommentsCount++;//de ce nu s amodificat in  baza de date?
+                b.CommentsCount++;
                 b.Comments.Add(comment);
+                db.SaveChanges();
                 return Redirect("/Bookmark/Show/" + BookmarkId);
             }
             else
@@ -165,10 +171,41 @@ namespace IR_Hub.Controllers
             }
         }
 
+        [HttpPost]
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult AddCategory([FromForm] CategoryBookmark categBookmark)
+        {
+            if (ModelState.IsValid)
+            {
+                if (db.CategoryBookmarks
+                    .Where(ab => ab.BookmarkId == categBookmark.BookmarkId)
+                    .Where(ab => ab.CategoryId == categBookmark.CategoryId)
+                    .Count() > 0)
+                {
+                    TempData["message"] = "Acest articol este deja adaugat in colectie";
+                    TempData["messageType"] = "alert-danger";
+                }
+                else
+                {
+                    db.CategoryBookmarks.Add(categBookmark);
+                    db.SaveChanges();
 
+                    TempData["message"] = "Articolul a fost adaugat in colectia selectata";
+                    TempData["messageType"] = "alert-success";
+                }
 
+            }
+            else
+            {
+                TempData["message"] = "Nu s-a putut adauga articolul in colectie";
+                TempData["messageType"] = "alert-danger";
+            }
 
-        // [HttpGet] - care se executa implicit
+            return Redirect("/Bookmark/Show/" + categBookmark.BookmarkId);
+        }
+
+        //adaugarea unui nou bookmark
+        // [HttpGet] implicit
 
         [Authorize(Roles = "User,Admin")]
         public IActionResult New()
@@ -187,8 +224,8 @@ namespace IR_Hub.Controllers
             return View(bookmark);
         }
 
-        // Se adauga articolul in baza de date
-        // Doar utilizatorii cu rolul User si Admin pot adauga articole in platforma
+
+        //adaugarea dupa ce am primit info din forms
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
         public IActionResult New(Bookmark bookmark)
@@ -211,6 +248,7 @@ namespace IR_Hub.Controllers
             }
         }
 
+        //editarea unui bookmark
 
         [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id)
@@ -235,8 +273,7 @@ namespace IR_Hub.Controllers
             }
         }
 
-        // Se adauga articolul modificat in baza de date
-        // Se verifica rolul utilizatorilor care au dreptul sa editeze
+        //editarea dupa ce am primit info din forms
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id, Bookmark requestBookmark)
@@ -263,7 +300,7 @@ namespace IR_Hub.Controllers
 
 
      
-
+        //stergerea unui bookmark
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
         public ActionResult Delete(int id)
@@ -327,30 +364,6 @@ namespace IR_Hub.Controllers
             ViewBag.EsteAdmin = User.IsInRole("Admin");
         }
 
-        /*[NonAction]
-        public IEnumerable<SelectListItem> GetAllCategories()
-        {
-            // generam o lista de tipul SelectListItem fara elemente
-            var selectList = new List<SelectListItem>();
-
-            // extragem toate categoriile din baza de date
-            var categories = from cat in db.Categories
-                             select cat;
-
-            // iteram prin categorii
-            foreach (var category in categories)
-            {
-                // adaugam in lista elementele necesare pentru dropdown
-                // id-ul categoriei si denumirea acesteia
-                selectList.Add(new SelectListItem
-                {
-                    Value = category.Id.ToString(),
-                });
-            }
-
-            // returnam lista de categorii
-            return selectList;
-        }*/
-
+      
     }
 }

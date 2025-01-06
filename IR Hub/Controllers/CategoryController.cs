@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IR_Hub.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "User,Admin")]
     public class CategoryController : Controller
     {
 
@@ -44,27 +44,61 @@ namespace IR_Hub.Controllers
             return View(category);
         }
 
-        public ActionResult New()
+        // [HttpGet] implicit
+
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult New()
         {
-            return View();
+            var categ = new Category
+            {
+                Date_created = DateTime.Now,
+                UserId = _userManager.GetUserId(User),
+            };
+
+            return View(categ);
         }
 
+
+        //adaugarea dupa ce am primit info din forms
         [HttpPost]
-        public ActionResult New(Category cat)
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult New(Category categ)
         {
             if (ModelState.IsValid)
             {
-                db.Categories.Add(cat);
-                db.SaveChanges();
-                TempData["message"] = "Categoria a fost adaugata";
-                return RedirectToAction("Index");
-            }
+                // Obține utilizatorul curent
+                var userId = _userManager.GetUserId(User);
+                var user = db.Users.FirstOrDefault(u => u.Id == userId);
 
+                categ.UserId = userId;
+
+                categ.Date_created = DateTime.Now;
+                categ.Date_updated = DateTime.Now;
+
+                // Setează vizibilitatea în funcție de starea checkbox-ului
+                categ.visibility = categ.visibility; // Va fi true dacă checkbox-ul este selectat, false dacă nu este selectat
+
+                categ.Description = "not yet";
+
+
+                db.Categories.Add(categ);
+
+                db.SaveChanges();
+
+                // Mesaj de succes
+                TempData["message"] = "Categoria a fost adăugată!";
+                TempData["messageType"] = "alert-success";
+
+                return RedirectToAction("Index", "Category");
+            }
             else
             {
-                return View(cat);
+                // Dacă validarea eșuează, redirecționează înapoi la formularul de creare
+                return View(categ);
             }
         }
+
+
 
         public ActionResult Edit(int id)
         {
@@ -96,8 +130,8 @@ namespace IR_Hub.Controllers
         {
             // Category category = db.Categories.Find(id);
 
-            Category category = db.Categories.Include("Articles")
-                                             .Include("Articles.Comments")
+            Category category = db.Categories.Include("Bookmarks")
+                                             .Include("Bookmarks.Comments")
                                              .Where(c => c.Id == id)
                                              .First();
 

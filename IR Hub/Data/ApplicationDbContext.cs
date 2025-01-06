@@ -26,11 +26,11 @@ namespace IR_Hub.Data
                 base.OnModelCreating(modelBuilder);
             // definirea relatiei de delete dintre Comment/Vote si Bookmark/User
 
-            modelBuilder.Entity<Comment>()
+            /*modelBuilder.Entity<Comment>()
                 .HasOne(c => c.User)
                 .WithMany(u => u.Comments) 
                 .HasForeignKey(c => c.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.NoAction);*/
 
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.Bookmark)
@@ -38,11 +38,11 @@ namespace IR_Hub.Data
                 .HasForeignKey(c => c.BookmarkId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Vote>()
+            /*modelBuilder.Entity<Vote>()
                 .HasOne(v => v.User)
                 .WithMany(u => u.Votes) 
                 .HasForeignKey(v => v.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.NoAction);*/
 
             modelBuilder.Entity<Vote>()
                 .HasOne(v => v.Bookmark)
