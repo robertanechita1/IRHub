@@ -1,5 +1,5 @@
 ﻿<head>
-    <link rel="stylesheet" href="/css/site.css">
+    <link rel="stylesheet" href="/css/user.css">
 </head>
 
 
@@ -22,27 +22,30 @@
             @if (ViewBag.AfisareButoane)
             {
                 <div class="d-flex justify-content-center">
-                    <a class="btn btn-warning btn-sm me-2" href="@Url.Action("Edit", "User", new { id = Model.Id })">Editează Profil</a>
+                    <a class="btn btn-warning btn-sm me-2" id="editUser" href="@Url.Action("Edit", "User", new { id = Model.Id })">Editează Profil</a>
                     <form action="@Url.Action("Delete", "User", new { id = Model.Id })" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-danger btn-sm">Șterge Contul</button>
+                        <button type="submit" class="btn btn-danger btn-sm" id="delUser">Șterge Contul</button>
                     </form>
                     
                 </div>
+                <div id="addBkCat">
+                    <a class="nav-link" href="@Url.Action("New", "Bookmark")">Adaugă Bookmark</a>
                 
-                <a class="nav-link" href="@Url.Action("New", "Bookmark")">Adaugă Bookmark</a>
-                
-                <a class="nav-link" href="@Url.Action("New", "Category")">Adaugă Categorie</a>
+                    <a class="nav-link" href="@Url.Action("New", "Category")">Adaugă Categorie</a>
+                </div>
             }
 
+            
+        </div>
+        <div id="aboutAndCateg">
             <div class="mt-4">
                 <h5>Despre mine</h5>
                 <p>@Model.About</p>
             </div>
-        </div>
-        <div>
+            <h5 id="numecat">Colectiile mele</h5>
             @foreach (var categ in ViewBag.UserCategories)
             {
-                <span>@categ.Name</span>
+                <span><a id="categUser" href="@Url.Action("Show", "Category", new { id = categ.Id })">@categ.Name</a></span>
             }
         </div>
     </div>

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IR_Hub.Controllers
 {
-    [Authorize(Roles = "User,Admin")]
+    //[Authorize(Roles = "User,Admin")]
     public class CategoryController : Controller
     {
 
@@ -40,8 +40,18 @@ namespace IR_Hub.Controllers
 
         public ActionResult Show(int id)
         {
-            Category category = db.Categories.Find(id);
+            var category = db.Categories.Find(id);
+            var bookmarkCategs = db.CategoryBookmarks.Where(u => u.CategoryId == id);
+
+            // extragem toate BookmarkId-urile intr-o
+            var bookmarkIds = bookmarkCategs.Select(rel => rel.BookmarkId).ToList();
+
+            var bookmarks = db.Bookmarks.Where(b => bookmarkIds.Contains(b.Id)).ToList();
+
+            ViewBag.Bookmarks = bookmarks;
+
             return View(category);
+
         }
 
         // [HttpGet] implicit
@@ -78,7 +88,7 @@ namespace IR_Hub.Controllers
                 // Setează vizibilitatea în funcție de starea checkbox-ului
                 categ.visibility = categ.visibility; // Va fi true dacă checkbox-ul este selectat, false dacă nu este selectat
 
-                categ.Description = "not yet";
+                categ.Description = "Fără descriere.";
 
 
                 db.Categories.Add(categ);

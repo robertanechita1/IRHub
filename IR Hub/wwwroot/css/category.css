@@ -1,0 +1,67 @@
+/* Container pentru toate bookmark-urile */
+
+body {
+    background-color: #f7f2ed;
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between; /* titlu la stg, buton la dreapta */
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.edit-button {
+    background-color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    color: black;
+    padding: 10px 15px;
+}
+
+.bookmark-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* spatiu intre carduri */
+    background-color: #f7f2ed;
+    justify-content: flex-start; /* aliniere la stg */
+}
+
+/* individual pentru fiecare bookmark */
+.bookmark-card {
+    background-color: #fff; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    padding: 15px; /* spatiu interior */
+    width: calc(25% - 20px); /* 4 pe rand */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column; /* pe verticala */
+    align-items: center; /* centrare pe orizontala*/
+}
+
+/* media */
+.bookmark-media {
+    max-width: 90%; /* la ltimea cardului */
+    height: auto;
+    border-radius: 8px; 
+    margin-bottom: 10px;
+}
+
+/* Titlu bookmark */
+.bookmark-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px 0;
+    text-align: center;
+}
+
+/* Link pentru detalii */
+.bookmark-link {
+    text-decoration: none;
+    color: black;
+}
+
+.bookmark-link:hover {
+    color: #0056b3;
+}

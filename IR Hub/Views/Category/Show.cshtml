@@ -1,5 +1,53 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿<head>
+    <link rel="stylesheet" href="/css/category.css">
+</head>
+
+@model IR_Hub.Models.Category
+
 @{
+    var bookmarks = ViewBag.Bookmarks as List<Bookmark>;
+}
+
+<div class="category-header">
+    <h1>@Model.Name</h1>
+    <a href="@Url.Action("Edit", "Category", new { id = Model.Id })" class="edit-button">Editează Categoria</a>
+</div>
+<p>@Model.Description</p>
+
+@if (bookmarks != null && bookmarks.Any())
+{
+    <div class="bookmark-container">
+        @foreach (var bookmark in bookmarks)
+        {
+            <div class="bookmark-card">
+                @if (!string.IsNullOrEmpty(bookmark.Media_Content))
+                {
+                    var mediaUrl = bookmark.Media_Content.ToLower();
+                    if (mediaUrl.EndsWith(".jpg") || mediaUrl.EndsWith(".jpeg") || mediaUrl.EndsWith(".png") || mediaUrl.EndsWith(".gif"))
+                    {
+                        <img src="@bookmark.Media_Content" alt="Media Content" class="bookmark-media" />
+                    }
+                    else if (mediaUrl.EndsWith(".mp4") || mediaUrl.EndsWith(".webm") || mediaUrl.EndsWith(".ogg"))
+                    {
+                        <video controls class="bookmark-media">
+                            <source src="@bookmark.Media_Content" type="video/mp4" />
+                            <source src="@bookmark.Media_Content" type="video/webm" />
+                            <source src="@bookmark.Media_Content" type="video/ogg" />
+                            Browser-ul tău nu suportă elementul video.
+                        </video>
+                    }
+                    else
+                    {
+                        <p>Conținut media: <a href="@bookmark.Media_Content" target="_blank">@bookmark.Media_Content</a></p>
+                    }
+                }
+                <h3 class="bookmark-title">@bookmark.Title</h3>
+                <a href="@Url.Action("Show", "Bookmark", new { id = bookmark.Id })" class="bookmark-link">Vezi detalii</a>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>Nu există bookmark-uri asociate acestei categorii.</p>
 }
