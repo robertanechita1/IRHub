@@ -24,7 +24,7 @@ namespace IR_Hub.Controllers
             _roleManager = roleManager;
         }
 
-        
+
         // [HttpGet] se executa implicit
         //afisarea tuturor bookmarks urilor
         public IActionResult Index(string sortOrder = "popular")
@@ -116,7 +116,7 @@ namespace IR_Hub.Controllers
 
         // afisarea unui singur articol in functie de id-ul si toate comentariile asociate si user ul
         // [HttpGet]  implicit
-    
+
         public IActionResult Show(int id)
         {
             Bookmark bookmark = db.Bookmarks.Include("Comments")
@@ -200,7 +200,7 @@ namespace IR_Hub.Controllers
                     TempData["message"] = "Articolul a fost adaugat in colectia selectata";
                     TempData["messageType"] = "alert-success";
                 }
-                        }
+            }
             else
             {
                 TempData["message"] = "Nu s-a putut adauga articolul in colectie";
@@ -286,7 +286,7 @@ namespace IR_Hub.Controllers
             {
                 comm.Content = updatedComment.Content; // Actualizează conținutul comentariului
                 db.SaveChanges();
-                return RedirectToAction("Show","Bookmark", new { id = comm.BookmarkId });
+                return RedirectToAction("Show", "Bookmark", new { id = comm.BookmarkId });
             }
             else
             {
@@ -311,7 +311,7 @@ namespace IR_Hub.Controllers
                 CommentsCount = 0,
                 Votes = new List<Vote>(),
                 Comments = new List<Comment>()
-            }; 
+            };
 
             return View(bookmark);
         }
@@ -374,7 +374,7 @@ namespace IR_Hub.Controllers
 
             if (ModelState.IsValid)
             {
-                
+
                 bookmark.Title = requestBookmark.Title;
                 bookmark.Media_Content = requestBookmark.Media_Content;
                 bookmark.Date_updated = DateTime.Now;
@@ -382,7 +382,7 @@ namespace IR_Hub.Controllers
                 TempData["messageType"] = "alert-success";
                 db.SaveChanges();
                 return RedirectToAction("Index");
-                
+
             }
             else
             {
@@ -391,7 +391,7 @@ namespace IR_Hub.Controllers
         }
 
 
-     
+
         //stergerea unui bookmark
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
@@ -440,7 +440,8 @@ namespace IR_Hub.Controllers
         private void SetAccessRights(string userid)
         {
             ViewBag.AfisareButoane = false;
-            if (User.Identity.IsAuthenticated) {
+            if (User.Identity.IsAuthenticated)
+            {
                 string currentUserId = _userManager.GetUserId(User);
 
                 if (currentUserId == userid || User.IsInRole("Admin"))
@@ -449,13 +450,13 @@ namespace IR_Hub.Controllers
                 }
             }
 
-            
+
 
             ViewBag.UserCurent = _userManager.GetUserId(User);
 
             ViewBag.EsteAdmin = User.IsInRole("Admin");
         }
 
-      
+
     }
 }

@@ -1,0 +1,86 @@
+﻿
+<div class="container mt-5">
+    <div class="text-center">
+        <!-- Poza de profil -->
+        <img src="@Model.Profile_image ?? " https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9eLeSj523CsBb4S2TNM4BZ-8TuObk0YsoaFQVvATuYEGEXLqxjIqAxOJh0z2xgU1kPzc&usqp=CAU""
+             alt="Profile Image"
+             class="rounded-circle"
+             style="width: 150px; height: 150px; object-fit: cover;">
+
+
+        <!-- Formular pentru editare (ascuns inițial) -->
+        <form asp-action="UpdateProfile" asp-controller="User" method="post" id="editProfileForm" class="mt-3" style="display:none;">
+            <input type="hidden" name="id" value="@Model.Id" />
+
+            <!-- First Name -->
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" name="FirstName" class="form-control" value="@Model.FirstName" />
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" name="LastName" class="form-control" value="@Model.LastName" />
+            </div>
+
+            <!-- User Name -->
+            <div class="form-group">
+                <label for="userName">User Name</label>
+                <input type="text" id="userName" name="UserName" class="form-control" value="@Model.UserName" />
+            </div>
+
+            <!-- Profile Image -->
+            <div class="form-group">
+                <label for="profileImage">Profile Image URL</label>
+                <input type="text" id="profileImage" name="ProfileImage" class="form-control" value="@Model.Profile_image" />
+            </div>
+
+            <!-- About -->
+            <div class="form-group">
+                <label for="about">About</label>
+                <textarea id="about" name="About" class="form-control">@Model.About</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success mt-3">Save Changes</button>
+        </form>
+
+        <div id="viewProfile" class="mt-3 text-center">
+            <h4>
+                <span>@Model.FirstName</span> <span>@Model.LastName</span>
+            </h4>
+
+            <h5 class="text-muted">@Model.UserName</h5>
+
+            <!-- Afișează butonul de editare dacă este utilizatorul curent -->
+            @if (ViewBag.AfisareButoane)
+            {
+                <button class="btn btn-primary mt-3" onclick="toggleEditMode()">Edit Profile</button>
+            }
+
+            <div class="mt-4">
+                <h5>About</h5>
+                <p>@Model.About</p>
+            </div>
+        </div>
+        <div>
+            @foreach (var categ in ViewBag.UserCategories)
+            {
+                <span>@categ.Name</span>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleEditMode() {
+        const editForm = document.getElementById('editProfileForm');
+        const viewProfile = document.getElementById('viewProfile');
+
+        // Ascunde/afișează formularul de editare
+        editForm.style.display = editForm.style.display === 'none' ? 'block' : 'none';
+
+        // Ascunde/afișează vizualizarea normală
+        viewProfile.style.display = viewProfile.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
