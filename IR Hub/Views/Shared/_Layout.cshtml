@@ -27,15 +27,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>*@
-                        @if (User.Identity.IsAuthenticated )
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("New", "Bookmark")">Adaugă Bookmark</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("New", "Category")">Adaugă Categorie</a>
-                            </li>
-                        }
+                        
                         <!-- Search Form -->
                         <form method="GET" class="mb-3" id="navigare">
                             <div class="input-group">

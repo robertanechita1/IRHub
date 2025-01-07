@@ -1,6 +1,6 @@
 html {
     font-size: 14px;
-    color: mediumvioletred;
+    color: #f7f2ed;
     position: relative;
     min-height: 100%;
 }
@@ -12,17 +12,37 @@ html {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #f7f2ed;
 }
 
 body {
-  margin-bottom: 60px;
-  background-color: red;
+    margin-bottom: 60px;
+    background-color: #f7f2ed;
 }
 
 #navigare {
-    background-color: cabba6;
+    background-color: #f7f2ed;
 }
 #logo {
-    background-color: e9dbc7;
+    background-color: #f7f2ed;
 }
+
+button {
+    background-color: white; 
+    color: brown; 
+    padding: 10px 15px; 
+    border-radius: 5px; 
+    font-size: 16px; 
+    cursor: pointer; 
+}
+
+
+button:hover {
+    background-color: brown; 
+    color: white; 
+}
+
+#adaugareB, #adaugareC{
+    list-style-type: none; /*elimina bulinele din fata elementelor de lista */
+}
+

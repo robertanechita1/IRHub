@@ -89,7 +89,7 @@ namespace IR_Hub.Controllers
                 TempData["message"] = "Categoria a fost adăugată!";
                 TempData["messageType"] = "alert-success";
 
-                return RedirectToAction("Index", "Category");
+                return RedirectToAction("Show","User", new { id = categ.UserId }); //redirectionare inapoi in profil
             }
             else
             {

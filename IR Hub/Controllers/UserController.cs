@@ -16,19 +16,19 @@ public class UserController : Controller
 
     private readonly UserManager<User> _userManager;
 
-    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly SignInManager<User> _signInManager; //am nevoie pentru delogare in momentul stergerii contului
 
     public UserController(
         ApplicationDbContext context,
         UserManager<User> userManager,
-        RoleManager<IdentityRole> roleManager
+        SignInManager<User> signInManager
         )
     {
         db = context;
 
         _userManager = userManager;
 
-        _roleManager = roleManager;
+        _signInManager = signInManager;
     }
     public IActionResult Index()
     {
@@ -44,7 +44,7 @@ public class UserController : Controller
     public IActionResult Show(string id)
     {
         var userId = _userManager.GetUserId(User);
-        var user = db.Users.FirstOrDefault(u => u.Id == userId);
+        var user = db.Users.FirstOrDefault(u => u.Id == id);
 
         if (user == null)
         {
@@ -58,93 +58,80 @@ public class UserController : Controller
             ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9eLeSj523CsBb4S2TNM4BZ-8TuObk0YsoaFQVvATuYEGEXLqxjIqAxOJh0z2xgU1kPzc&usqp=CAU"
             : user.Profile_image;
 
-        var UserCategories = db.Categories.Where(u => u.UserId == userId);
-        ViewBag.UserCategories = UserCategories;
+
+        if(userId == id || User.IsInRole("Admin")) 
+        {
+            var UserCategories = db.Categories.Where(u => u.UserId == id);
+            ViewBag.UserCategories = UserCategories;
+
+            return View(user);
+        }
+        else
+        {
+            var UserCategories = db.Categories.Where(u => u.UserId == id && u.visibility == true);
+            ViewBag.UserCategories = UserCategories;
+
+            return View(user);
+        }
+
+        
+        
+    }
+    [HttpGet]
+
+    [HttpGet]
+    public IActionResult Edit(string id)
+    {
+        var user = db.Users.Find(id);
+
+        if (user == null)
+        {
+            return NotFound(); 
+        }
 
         return View(user);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> UpdateProfileImage(string profileImageUrl)
-    {
-        var currentUser = await _userManager.GetUserAsync(User);
-        if (currentUser == null)
-        {
-            return RedirectToAction("Login", "Account");
-        }
-
-        if (!string.IsNullOrEmpty(profileImageUrl))
-        {
-            currentUser.Profile_image = profileImageUrl;
-            await _userManager.UpdateAsync(currentUser);
-        }
-
-        return RedirectToAction(nameof(Show), new { id = currentUser.Id });
-    }
-
-
-
-
-    public async Task<ActionResult> Edit(string id)
-    {
-        User user = db.Users.Find(id);
-
-        ViewBag.AllRoles = GetAllRoles();
-
-        var roleNames = await _userManager.GetRolesAsync(user); // Lista de nume de roluri
-
-        // Cautam ID-ul rolului in baza de date
-        ViewBag.UserRole = _roleManager.Roles
-                                          .Where(r => roleNames.Contains(r.Name))
-                                          .Select(r => r.Id)
-                                          .First(); // Selectam 1 singur rol
-
-        return View(user);
-    }
 
     [HttpPost]
-    public async Task<ActionResult> Edit(string id, User newData, [FromForm] string newRole)
+    public IActionResult Edit(string id, User newData)
     {
-        User user = db.Users.Find(id);
-
-       // user.AllRoles = GetAllRoles();
-
-
         if (ModelState.IsValid)
         {
-            user.UserName = newData.UserName;
-            user.Email = newData.Email;
+            var user = db.Users.Find(id);
+
+            if (user == null)
+            {
+                return NotFound(); 
+            }
+
+            // Actualizează câmpurile utilizatorului
             user.FirstName = newData.FirstName;
             user.LastName = newData.LastName;
-            user.PhoneNumber = newData.PhoneNumber;
+            user.UserName = newData.UserName;
+            user.Profile_image = newData.Profile_image;
+            user.About = newData.About;
 
-
-            // Cautam toate rolurile din baza de date
-            var roles = db.Roles.ToList();
-
-            foreach (var role in roles)
-            {
-                // Scoatem userul din rolurile anterioare
-                await _userManager.RemoveFromRoleAsync(user, role.Name);
-            }
-            // Adaugam noul rol selectat
-            var roleName = await _roleManager.FindByIdAsync(newRole);
-            await _userManager.AddToRoleAsync(user, roleName.ToString());
-
+            TempData["message"] = "Utilizatorul a fost actualizat";
+            TempData["messageType"] = "alert-success";
             db.SaveChanges();
 
+            // Redirecționează către profilul utilizatorului
+            return RedirectToAction("Show", new { id = id });
         }
-        return RedirectToAction("Index");
+        else
+        {
+            // Dacă datele trimise nu sunt valide, returnează din nou pagina cu erorile
+            return View(newData);
+        }
     }
+
 
 
     [HttpPost]
     public IActionResult Delete(string id)
     {
         var user = db.Users
-                     .Include("Articles")
-                     .Include("Comments")
-                     .Include("Bookmarks")
                      .Where(u => u.Id == id)
                      .First();
 
@@ -167,6 +154,26 @@ public class UserController : Controller
         var bookmarks = db.Bookmarks.Where(u => u.UserId == id);
         foreach (var bookmark in bookmarks)
         {
+            //delete bookmark comments
+            var bcomments = db.Comments.Where(u => u.BookmarkId == bookmark.Id);
+            foreach (var comment in bcomments)
+            {
+                db.Comments.Remove(comment);
+            }
+
+            //delete bookmark votes
+            var bvotes = db.Votes.Where(u => u.BookmarkId == bookmark.Id);
+            foreach (var vote in bvotes)
+            {
+                db.Votes.Remove(vote);
+            }
+
+            //delete relatia din bookmarkCategory
+            var bcategories = db.CategoryBookmarks.Where(u => u.BookmarkId == bookmark.Id);
+            foreach (var legatura in bcategories)
+            {
+                db.CategoryBookmarks.Remove(legatura);
+            }
             db.Bookmarks.Remove(bookmark);
         }
 
@@ -174,35 +181,27 @@ public class UserController : Controller
         var categories = db.Categories.Where(u => u.UserId == id);
         foreach (var category in categories)
         {
+            //delete relatia din bookmarkCategory
+            var bcategories = db.CategoryBookmarks.Where(u => u.CategoryId == category.Id);
+            foreach(var legatura  in bcategories)
+            {
+                db.CategoryBookmarks.Remove(legatura);
+            }
             db.Categories.Remove(category);
         }
+
+        db.SaveChanges();
 
         db.Users.Remove(user);
 
         db.SaveChanges();
+        _signInManager.SignOutAsync(); //delogare dupa stergerea contului 
 
-        return RedirectToAction("Index");
+        return RedirectToAction("Index", "Bookmark");
     }
 
 
-    [NonAction]
-    public IEnumerable<SelectListItem> GetAllRoles()
-    {
-        var selectList = new List<SelectListItem>();
-
-        var roles = from role in db.Roles
-                    select role;
-
-        foreach (var role in roles)
-        {
-            selectList.Add(new SelectListItem
-            {
-                Value = role.Id.ToString(),
-                Text = role.Name.ToString()
-            });
-        }
-        return selectList;
-    }
+   
 
     // Conditiile de afisare pentru butoanele de editare si stergere
     // butoanele aflate in view-uri

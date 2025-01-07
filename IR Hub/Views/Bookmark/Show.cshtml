@@ -12,7 +12,7 @@
 
                 <div class="card-body">
                     <h3 id="titlu" class="text-center mt-5">Detalii Articol: @Model.Title</h3>
-                    <small>Postat de: @Model.User.UserName</small>
+                    <small>Postat de: <a href="@Url.Action("Show", "User", new { id = @Model.UserId })">@Model.User.UserName</a></small>
                     <br />
                     <small>@Model.Date_created.ToString("dd/MM/yyyy")</small>
                     <p class="card-text">@Model.Description</p>
