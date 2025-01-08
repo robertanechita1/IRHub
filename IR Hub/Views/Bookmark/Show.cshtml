@@ -31,19 +31,19 @@
                                     <form asp-action="New" asp-controller="Vote" method="post" class="d-inline me-2">
                                         <input type="hidden" name="BookmarkId" value="@Model.Id" />
                                         <input type="hidden" name="UserId" value="@User.FindFirst("sub")?.Value" />
-                                        <button type="submit" name="VoteType" value="Like" class="btn btn-success btn-sm">Like</button>
+                                        <button type="submit" name="VoteType" value="Like" class="like-button">Like</button>
                                     </form>
 
                                     <form asp-action="New" asp-controller="Vote" method="post" class="d-inline">
                                         <input type="hidden" name="BookmarkId" value="@Model.Id" />
                                         <input type="hidden" name="UserId" value="@User.FindFirst("sub")?.Value" />
-                                        <button type="submit" name="VoteType" value="Dislike" class="btn btn-danger btn-sm">Dislike</button>
+                                        <button type="submit" name="VoteType" value="Dislike" class="dislike-button" >Dislike</button>
                                     </form>
                                     <form asp-action="AddCategory" asp-controller="Bookmark" method="post" class="d-inline">
                                         <input type="hidden" name="BookmarkId" value="@Model.Id" />
                                         <div>
                                             <select name="CategoryId" id = "categSelect" class="form-control">
-                                        <option value=""  selected hidden>Save</option>
+                                        <option value="" class="adaugat-button" selected hidden>Save</option>
                                                 @foreach (var categ in ViewBag.UserCategories)
                                                 {
                                                     <option value="@categ.Id">@categ.Name</option>
@@ -74,9 +74,9 @@
                             {
                                 <!-- Secțiunea pentru Editează și Șterge -->
                                 <div class="d-flex justify-content-end">
-                                    <a class="btn btn-warning btn-sm me-2" href="@Url.Action("Edit", "Bookmark", new { id = Model.Id })">Editează</a>
+                                <a class="like-button" href="@Url.Action("Edit", "Bookmark", new { id = Model.Id })">Editează</a>
                                     <form action="@Url.Action("Delete", "Bookmark", new { id = Model.Id })" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-danger btn-sm">Șterge</button>
+                                        <button type="submit" class="dislike-button">Șterge</button>
                                     </form>
                                 </div>
                             }
@@ -100,8 +100,8 @@
                         @if (comment.UserId == ViewBag.UserCurent) 
                         {
                             <div class="mt-2">
-                                <a asp-controller="Bookmark" asp-action="EditComment" asp-route-id="@comment.Id" class="btn btn-sm btn-primary">Edit</a>
-                                    <a asp-controller="Bookmark" asp-action="DeleteComment" asp-route-BookmarkId="@Model.Id" asp-route-id="@comment.Id" class="btn btn-sm btn-danger">Delete</a>
+                                    <a asp-controller="Bookmark" asp-action="EditComment" asp-route-id="@comment.Id" class="like-button">Edit</a>
+                                    <a asp-controller="Bookmark" asp-action="DeleteComment" asp-route-BookmarkId="@Model.Id" asp-route-id="@comment.Id" class="dislike-button">Delete</a>
 
                             </div>
                         }
@@ -119,7 +119,7 @@
                      <label for="CommentContent">Comentariul tău:</label>
                      <textarea id="CommentContent" name="Cont" class="form-control" rows="3" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Adaugă Comentariu</button>
+                <button type="submit" class="adaugat-button">Adaugă Comentariu</button>
             </form>
 
         </div>

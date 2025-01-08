@@ -2,15 +2,13 @@
     <link rel="stylesheet" href="/css/home.css">
 </head>
 <!-- Dropdown for Sorting -->
-<form method="get" class="mb-3" style="width: 200px;">
-    <div class="form-group">
-        <label for="sortOrder">Sortează după</label>
+<form method="get" class="mb-3 d-flex align-items-center" style="width: auto;">
+    <label for="sortOrder" class="me-2 mb-0">Sortează după</label>
         @Html.DropDownList("sortOrder", new List<SelectListItem>
         {
         new SelectListItem { Text = "Cele mai populare", Value = "popular" },
         new SelectListItem { Text = "Cele mai recente", Value = "recent" }
-        }, new { @class = "form-control", onchange = "this.form.submit()" })
-    </div>
+    }, new { @class = "form-select", onchange = "this.form.submit()", style = "width: auto;" })
 </form>
 
 <!-- Displaying Bookmarks -->
@@ -22,7 +20,7 @@
 }
 else
 {
-    <div class="container mt-5">
+    <div>
         <div class="row">
             @foreach (var bookmark in ViewBag.Bookmarks)
             {
@@ -35,7 +33,7 @@ else
                             <small class="text-muted">Creat la: @bookmark.Date_created.ToShortDateString()</small>
                         </div>
                         <div class="card-footer text-center">
-                            <a href="@Url.Action("Show", "Bookmark", new { id = bookmark.Id })" class="btn btn-primary btn-sm">Vezi detalii</a>
+                            <a href="@Url.Action("Show", "Bookmark", new { id = bookmark.Id })" class="details-button">Vezi detalii</a>
                         </div>
                     </div>
                 </div>
@@ -45,7 +43,7 @@ else
 }
 
 <!-- Pagination -->
-<div>
+<div class="pages">
     <nav aria-label="Page navigation example">
         <ul class="pagination">
             <li class="page-item">

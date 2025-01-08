@@ -1,21 +1,48 @@
-﻿html {
-    font-size: 14px;
-    color: mediumvioletred;
-    position: relative;
-    min-height: 100%;
-}
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
+﻿
 
 body {
-    margin-bottom: 60px;
-    background-color: dec29b;
+    background-color: #f7f2ed;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+.form-select {
+    padding: 5px 30px 5px 10px ;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    background-color: #d9d0c8;
+}
+
+.card {
+    background-color: #efe6de;
+    border-radius: 20px;
+}
+
+.details-button {
+    background-color: #95816c;
+    border-radius: 5px;
+    border-style: none;
+    text-decoration: none;
+    color: white;
+    padding: 5px 10px;
+}
+
+    .details-button:hover {
+        background-color: #76604a;
+        border-radius: 5px;
+        border-style: none;
+        text-decoration: none;
+        color: white;
+        padding: 5px 10px;
+    }
+
+.page-link {
+    background-color: #c1b9b1;
+    color: #504235;
+    width: auto;
 }
