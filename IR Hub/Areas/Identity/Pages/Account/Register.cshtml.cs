@@ -115,6 +115,7 @@ public class RegisterModel : PageModel
         {
             var user = CreateUser();
             user.Role = "User";
+            user.Profile_image = "https://static.vecteezy.com/system/resources/previews/005/129/844/non_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg";
 
             await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);

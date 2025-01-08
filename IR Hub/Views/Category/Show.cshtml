@@ -9,9 +9,18 @@
 }
 
 <div class="category-header">
-    <h1>@Model.Name</h1>
-    <a href="@Url.Action("Edit", "Category", new { id = Model.Id })" class="edit-button">Editează Categoria</a>
+    <h1 class="category-title">@Model.Name</h1>
+    @if (ViewBag.AfisareButoane)
+    {
+        <div class="category-buttons">
+            <a href="@Url.Action("Edit", "Category", new { id = Model.Id })" class="edit-button">Editează Categoria</a>
+            <form action="@Url.Action("Delete", "Category", new { id = Model.Id })" method="post" class="d-inline">
+                <button id="delete-button" type="submit" style="background-color:darkred; color:azure; border-radius:5px; padding: 10px 15px; border: none; cursor:pointer;">Șterge Categoria</button>
+            </form>
+        </div>
+    }
 </div>
+
 <p>@Model.Description</p>
 
 @if (bookmarks != null && bookmarks.Any())

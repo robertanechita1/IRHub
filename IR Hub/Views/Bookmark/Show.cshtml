@@ -70,7 +70,7 @@
                                     </script>
                                 </div>
 
-                            @if (ViewBag.EsteAdmin || Model.UserId == ViewBag.UserCurent)
+                        @if (ViewBag.AfisareButoane)
                             {
                                 <!-- Secțiunea pentru Editează și Șterge -->
                                 <div class="d-flex justify-content-end">
@@ -91,13 +91,16 @@
             @foreach (var comment in Model.Comments)
             {
                 <div class="media mb-3">
-                    <img class="mr-3" src="https://www.gravatar.com/avatar/@comment.User.Email.GetHashCode()" alt="user" width="50" height="50">
+                    <img src="@comment.User.Profile_image" 
+                         alt="Profile Image"
+                         class="rounded-circle"
+                         style="width: 30px; height: 30px; margin-bottom:3px; object-fit: cover;">
                     <div class="media-body">
                         <h5 class="mt-0">@comment.User.UserName</h5>
                         <p>@comment.Content</p>
                         <small>@comment.Date_created.ToString("dd/MM/yyyy HH:mm")</small>
                         <div class="d-flex justify-content-end">
-                        @if (comment.UserId == ViewBag.UserCurent) 
+                        @if (@comment.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
                         {
                             <div class="mt-2">
                                     <a asp-controller="Bookmark" asp-action="EditComment" asp-route-id="@comment.Id" class="like-button">Edit</a>

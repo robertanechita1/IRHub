@@ -53,10 +53,10 @@ public class UserController : Controller
 
         SetAccessRights(id);
 
-        // un URL implicit pentru poza de profil, daca nu exista
+        /*// un URL implicit pentru poza de profil, daca nu exista
         user.Profile_image = string.IsNullOrEmpty(user.Profile_image)
             ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9eLeSj523CsBb4S2TNM4BZ-8TuObk0YsoaFQVvATuYEGEXLqxjIqAxOJh0z2xgU1kPzc&usqp=CAU"
-            : user.Profile_image;
+            : user.Profile_image;*/
 
 
         if(userId == id || User.IsInRole("Admin")) 

@@ -66,10 +66,10 @@ body {
     margin-bottom: 10px;
 }
 
-    .media img {
-        border-radius: 50%;
-        margin-right: 10px;
-    }
+.media img {
+    border-radius: 50%;
+    margin-right: 10px;
+}
 
 .media-body {
     font-size: 0.9rem;
@@ -151,3 +151,4 @@ form {
     .d-flex .btn {
         font-size: 0.8rem;
     }
+
