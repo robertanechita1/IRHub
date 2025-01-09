@@ -26,7 +26,9 @@
                 <div class="card-footer text-muted">
                     <span>Voturi: @Model.VotesCount | Comentarii: @Model.CommentsCount</span>
                         <div class="d-flex justify-content-between">
-                                <!-- Secțiunea pentru Like și Dislike -->
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                            <!-- Secțiunea pentru Like și Dislike -->
                                 <div class="d-flex">
                                     <form asp-action="New" asp-controller="Vote" method="post" class="d-inline me-2">
                                         <input type="hidden" name="BookmarkId" value="@Model.Id" />
@@ -37,13 +39,13 @@
                                     <form asp-action="New" asp-controller="Vote" method="post" class="d-inline">
                                         <input type="hidden" name="BookmarkId" value="@Model.Id" />
                                         <input type="hidden" name="UserId" value="@User.FindFirst("sub")?.Value" />
-                                        <button type="submit" name="VoteType" value="Dislike" class="dislike-button" >Dislike</button>
+                                        <button type="submit" name="VoteType" value="Dislike" class="dislike-button">Dislike</button>
                                     </form>
                                     <form asp-action="AddCategory" asp-controller="Bookmark" method="post" class="d-inline">
                                         <input type="hidden" name="BookmarkId" value="@Model.Id" />
                                         <div>
-                                            <select name="CategoryId" id = "categSelect" class="form-control">
-                                        <option value="" class="adaugat-button" selected hidden>Save</option>
+                                            <select name="CategoryId" id="categSelect" class="form-control">
+                                                <option value="" class="adaugat-button" selected hidden>Save</option>
                                                 @foreach (var categ in ViewBag.UserCategories)
                                                 {
                                                     <option value="@categ.Id">@categ.Name</option>
@@ -51,9 +53,9 @@
                                             </select>
                                         </div>
                                         <div>
-                                        <button id="addButton" type="submit" class="btn btn-success ms-2" style="display: none;">+</button>
+                                            <button id="addButton" type="submit" class="btn btn-success ms-2" style="display: none;">+</button>
 
-                                        </div> 
+                                        </div>
                                     </form>
                                     <script>
                                         const categorySelect = document.getElementById('categSelect');
@@ -62,13 +64,16 @@
                                             if (this.value) {
                                                 // daca e selectata o optiune, apare +
                                                 addButton.style.display = 'inline-block';
-                                            } 
+                                            }
                                             else {
                                                 addButton.style.display = 'none';
                                             }
                                         });
                                     </script>
                                 </div>
+                            
+                            }
+                        
 
                         @if (ViewBag.AfisareButoane)
                             {
@@ -96,7 +101,7 @@
                          class="rounded-circle"
                          style="width: 30px; height: 30px; margin-bottom:3px; object-fit: cover;">
                     <div class="media-body">
-                        <h5 class="mt-0">@comment.User.UserName</h5>
+                        <h5 class="mt-0"><a href="@Url.Action("Show", "User", new { id = @comment.UserId })" style="color: black; text-decoration:none;">@comment.User.UserName</a></h5>
                         <p>@comment.Content</p>
                         <small>@comment.Date_created.ToString("dd/MM/yyyy HH:mm")</small>
                         <div class="d-flex justify-content-end">
@@ -114,16 +119,20 @@
                 </div>
             }
 
-
-            <!-- Adaugă comentariu -->
-            <form asp-action="NewComment" asp-controller="Bookmark" method="post" class="d-inline me-2">
-                <input type="hidden" name="BookmarkId" value="@Model.Id" />
-                <div class="form-group">
-                     <label for="CommentContent">Comentariul tău:</label>
-                     <textarea id="CommentContent" name="Cont" class="form-control" rows="3" required></textarea>
-                </div>
-                <button type="submit" class="adaugat-button">Adaugă Comentariu</button>
-            </form>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <!-- Adaugă comentariu -->
+                <form asp-action="NewComment" asp-controller="Bookmark" method="post" class="d-inline me-2">
+                    <input type="hidden" name="BookmarkId" value="@Model.Id" />
+                    <div class="form-group">
+                        <label for="CommentContent">Comentariul tău:</label>
+                        <textarea id="CommentContent" name="Cont" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="adaugat-button">Adaugă Comentariu</button>
+                </form>
+            }
+            
+           
 
         </div>
     </div>
