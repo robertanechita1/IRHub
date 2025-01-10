@@ -42,29 +42,44 @@ else
     </div>
 }
 
-<!-- Pagination -->
-<div class="pages">
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" href="@ViewBag.PaginationBaseUrl + 1" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
+@if (ViewBag.lastPage > 1) 
+{
+    <div class="pages">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <!-- Butonul de Previous -->
+                @if (ViewBag.currentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@($"{ViewBag.PaginationBaseUrl}{ViewBag.currentPage - 1}")" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
 
-            @for (int i = 1; i <= ViewBag.lastPage; i++)
-            {
-                <li class="page-item @(ViewBag.currentPage == i ? "active" : "")">
-                    <a class="page-link" href="@($"{ViewBag.PaginationBaseUrl}{i}")">@i</a>
-                </li>
-            }
+                <!-- Paginile vecine-->
+                @for (var i = ViewBag.currentPage - 1; i <= ViewBag.currentPage + 1; i++)
+                {
+                    @if (i > 0 && i <= ViewBag.lastPage)
+                    {
+                        <li class="page-item @(i == ViewBag.currentPage ? "active" : "")">
+                            <a class="page-link" href="@($"{ViewBag.PaginationBaseUrl}{i}")">
+                                @i
+                            </a>
+                        </li>
+                    }
+                }
+                <!-- Butonul de Next -->
+                @if (ViewBag.currentPage < ViewBag.lastPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@($"{ViewBag.PaginationBaseUrl}{ViewBag.currentPage + 1}")" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+}
 
-            <!-- Next Page -->
-            <li class="page-item @(ViewBag.currentPage == ViewBag.lastPage ? "disabled" : "")">
-                <a class="page-link" href="@($"{ViewBag.PaginationBaseUrl}{ViewBag.currentPage + 1}")" aria-label="Next">
-                    &raquo;
-                </a>
-            </li>
-        </ul>
-    </nav>
-</div>

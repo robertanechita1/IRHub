@@ -1,7 +1,7 @@
 ﻿/* CSS pentru design inspirat din imagine */
 
 body {
-    background-color: #f1e1d1;
+    background-color: #f7f2ed;
     font-family: Arial, sans-serif;
     color: #333;
 }
@@ -46,19 +46,36 @@ body {
         color: #555;
     }
 
-.btn-success, .btn-danger {
+.like-button {
     border-radius: 15px;
+    border-style: none;
     padding: 5px 15px;
     font-size: 0.9rem;
+    text-decoration: none;
+    background-color: #9e897c;
+    color: #f7f2ed;
 }
+    .like-button:hover {
+        font-size: 0.9rem;
+        background-color: #7d6b60;
+        color: #f7f2ed;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-.btn-warning {
-    background-color: #f0ad4e;
+.dislike-button {
     border: none;
     border-radius: 15px;
     padding: 5px 15px;
     font-size: 0.9rem;
+    text-decoration: none;
+    background-color: #7d6b60;
+    color: #f7f2ed;
 }
+    .dislike-button:hover {
+        background-color: #5a463a;
+        color: #f7f2ed;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
 .media {
     border-bottom: 1px solid #ddd;
@@ -85,55 +102,10 @@ textarea.form-control {
     border-radius: 15px;
     border: 1px solid #ddd;
     padding: 10px;
+    background-color: #e0dbd7;
+    color: #504235;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
-
-/* Bara de navigare */
-.navbar {
-    background-color: #4c4643;
-    border-bottom: 1px solid #d6cdc4; 
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
-}
-
-/* Logo*/
-.navbar-brand {
-    font-family: 'Times New Roman', serif; 
-    border-radius: 100%;
-    font-weight: bold;
-    color: #d4cec9; 
-    text-decoration: none;
-    background-color: #7d6b60;
-    color: white;
-    padding: 8px 12px 9px 12px;
-}
-#navigare {
-    display: flex;
-    align-items: center;
-    width: 80%;
-    justify-content: center;
-    background-color: #d4cec9; 
-    border-radius: 50px; 
-
-}
-    #navigare input {
-        border: none;
-        background-color: #d4cec9;
-        font-size: 16px;
-        width: 100%;
-        border-radius: 50px;
-    padding: 10px;
-}
-
-.navbar-collapse .logout {
-    font-weight: bold;
-    color: #000;
-    margin-left: 15px;
-    text-decoration: none;
-}
-
-    .navbar-collapse .logout:hover,
-    .navbar-collapse .profile:hover {
-        color: #7a7a7a;
-    }
 
 /* Secțiunea de comentarii */
 form {

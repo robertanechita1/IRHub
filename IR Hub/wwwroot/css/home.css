@@ -24,12 +24,13 @@ body {
 }
 
 .details-button {
+    margin-top:5px;
     background-color: #95816c;
     border-radius: 5px;
     border-style: none;
     text-decoration: none;
     color: white;
-    padding: 5px 10px;
+    padding: 10px 15px;
 }
 
     .details-button:hover {
@@ -45,4 +46,10 @@ body {
     background-color: #c1b9b1;
     color: #504235;
     width: auto;
+}
+
+.form-control {
+    background-color: #faf6f2;
+    color: #504235;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }

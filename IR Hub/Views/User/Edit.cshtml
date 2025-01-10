@@ -1,4 +1,6 @@
-﻿
+﻿<head>
+    <link rel="stylesheet" href="/css/home.css">
+</head>
 <form asp-action="Edit" asp-controller="User" method="post" asp-route-id="@Model.Id" class="mt-3" >
     <input type="hidden" name="id" value="@Model.Id" />
 
@@ -7,30 +9,30 @@
         <label for="firstName">Prenume</label>
         <input type="text" id="firstName" name="FirstName" class="form-control" value="@Model.FirstName" />
     </div>
-
+    <br />
     <!-- Last Name -->
     <div class="form-group">
         <label for="lastName">Nume</label>
         <input type="text" id="lastName" name="LastName" class="form-control" value="@Model.LastName" />
     </div>
-
+    <br />
     <!-- User Name -->
     <div class="form-group">
         <label for="userName">UserName</label>
         <input type="text" id="userName" name="UserName" class="form-control" value="@Model.UserName" />
     </div>
-
+    <br />
     <!-- Profile Image -->
     <div class="form-group">
         <label for="profileImage">URL pentru imaginea de profil</label>
         <input type="text" id="profileImage" name="Profile_image" class="form-control" value="@Model.Profile_image" />
     </div>
-
+    <br />
     <!-- About -->
     <div class="form-group">
         <label for="about">Despre mine</label>
         <textarea id="about" name="About" class="form-control">@Model.About</textarea>
     </div>
 
-    <button type="submit" class="btn btn-success mt-3">Salvează Modificările</button>
+    <button type="submit" class="details-button">Salvează Modificările</button>
 </form>

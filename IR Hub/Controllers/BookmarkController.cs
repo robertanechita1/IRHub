@@ -85,6 +85,7 @@ public class BookmarkController : Controller
         int totalItems = bookmarks.Count();
         int currentPage = 1;
 
+        // Obține pagina curentă din QueryString
         if (!string.IsNullOrEmpty(HttpContext.Request.Query["page"]) &&
             int.TryParse(HttpContext.Request.Query["page"], out int pageNumber) &&
             pageNumber > 0)
@@ -92,16 +93,26 @@ public class BookmarkController : Controller
             currentPage = pageNumber;
         }
 
+
+        int lastPage = (int)Math.Ceiling((double)totalItems / perPage);
+
+        // Asigură-te că pagina curentă este validă
+        if (currentPage > lastPage) currentPage = lastPage;
+        if (totalItems == 0) lastPage = currentPage = 1;
+
+        // Calculează offset-ul și extrage bookmark-urile paginate
         int offset = (currentPage - 1) * perPage;
         var paginatedBookmarks = bookmarks.Skip(offset).Take(perPage).ToList();
 
-        // Setam variabilele pentru View
+        // Setează variabilele pentru View
         ViewBag.Bookmarks = paginatedBookmarks;
-        ViewBag.lastPage = Math.Ceiling((double)totalItems / perPage);
-        ViewBag.PaginationBaseUrl = $"/Bookmarks/Index?sortOrder={sortOrder}&search={search}&page=";
+        ViewBag.lastPage = lastPage;
+        ViewBag.currentPage = currentPage;
+        ViewBag.PaginationBaseUrl = $"/Bookmark/Index?sortOrder={sortOrder}&search={search}&page=";
+
         ViewBag.SearchString = search;
 
-
+        // Gestionează mesajele din TempData
         if (TempData.ContainsKey("message"))
         {
             ViewBag.Message = TempData["message"];
@@ -109,6 +120,8 @@ public class BookmarkController : Controller
         }
 
         return View();
+
+
     }
 
 
