@@ -101,7 +101,7 @@ public class CategoryController : Controller
             TempData["message"] = "Categoria a fost adăugată!";
             TempData["messageType"] = "alert-success";
 
-            return RedirectToAction("Show","User", new { id = categ.UserId }); //redirectionare inapoi in profil
+            return RedirectToAction("New","Category"); //redirectionare inapoi in profil
         }
         else
         {
@@ -127,13 +127,16 @@ public class CategoryController : Controller
         {
 
             category.Name = requestCategory.Name;
+            category.Description = requestCategory.Description;
+            category.visibility = requestCategory.visibility;
+            category.Date_updated = DateTime.Now;
             db.SaveChanges();
             TempData["message"] = "Categoria a fost modificata!";
-            return RedirectToAction("Index");
+            return RedirectToAction("Show", "User", new { id = category.UserId });
         }
         else
         {
-            return View(requestCategory);
+            return RedirectToAction("Show", "User", new { id = category.UserId });
         }
     }
 

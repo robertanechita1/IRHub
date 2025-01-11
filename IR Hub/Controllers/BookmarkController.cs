@@ -50,7 +50,6 @@ public class BookmarkController : Controller
 
         ViewBag.Bookmarks = bookmarks.ToList();
 
-
         if (TempData.ContainsKey("message"))
         {
             ViewBag.Message = TempData["message"];

@@ -35,11 +35,6 @@ body {
 
     .details-button:hover {
         background-color: #76604a;
-        border-radius: 5px;
-        border-style: none;
-        text-decoration: none;
-        color: white;
-        padding: 5px 10px;
     }
 
 .page-link {

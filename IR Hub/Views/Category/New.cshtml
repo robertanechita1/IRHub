@@ -20,13 +20,14 @@
     <br />
 
     
-    <label asp-for="visibility">Selectati daca doriti o colectie publica</label>
-    <br />
-    <input asp-for="visibility" type="checkbox" class="form-check-input" />
-    <span asp-validation-for="visibility" class="text-danger"></span>
-    <br />
-    <br />
-
+   <div method="get" class="mb-3 d-flex align-items-center" style="width: auto;">
+        <label for="visibility" class="me-2 mb-0">Vizibilitatea Categoriei</label>
+        @Html.DropDownList("visibility", new List<SelectListItem>
+        {
+        new SelectListItem { Text = "Public", Value = "true" },
+        new SelectListItem { Text = "Privat", Value = "false" }
+        }, new { @class = "form-select", style = "width: auto;" })
+    </div>
     
     <label asp-for="Description">Descriere colectie</label>
     <br />

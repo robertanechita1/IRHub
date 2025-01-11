@@ -1,0 +1,29 @@
+﻿<head>
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<form asp-action="Edit" asp-controller="Category" method="post" asp-route-id="@Model.Id" class="mt-3">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div class="form-group">
+        <label for="Name">Numele Categoriei</label>
+        <input type="text" name="Name" class="form-control" value="@Model.Name" />
+    </div>
+    <br />
+
+    <div class="form-group">
+        <label for="Description">Descriere</label>
+        <input type="text" name="Description" class="form-control" value="@Model.Description" />
+    </div>
+    <br />
+
+    <div method="get" class="mb-3 d-flex align-items-center" style="width: auto;">
+        <label for="visibility" class="me-2 mb-0">Vizibilitatea Categoriei</label>
+        @Html.DropDownList("visibility", new List<SelectListItem>
+        {
+        new SelectListItem { Text = "Public", Value = "true" },
+        new SelectListItem { Text = "Privat", Value = "false" }
+        }, new { @class = "form-select", style = "width: auto;" })
+    </div>
+
+    <button type="submit" class="details-button">Salvează Modificările</button>
+</form>

@@ -25,7 +25,7 @@
                 </div>
                 <div class="card-footer text-muted">
                     <span>Voturi: @Model.VotesCount | Comentarii: @Model.CommentsCount</span>
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-end">
                             @if (User.Identity.IsAuthenticated)
                             {
                             <!-- Secțiunea pentru Like și Dislike -->
@@ -81,7 +81,7 @@
                                 <div class="d-flex justify-content-end">
                                 <a class="like-button" href="@Url.Action("Edit", "Bookmark", new { id = Model.Id })">Editează</a>
                                     <form action="@Url.Action("Delete", "Bookmark", new { id = Model.Id })" method="post" class="d-inline">
-                                        <button type="submit" class="dislike-button">Șterge</button>
+                                    <button type="submit" class="dislike-button">Șterge</button>
                                     </form>
                                 </div>
                             }

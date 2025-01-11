@@ -15,7 +15,7 @@
         <div class="category-buttons">
             <a href="@Url.Action("Edit", "Category", new { id = Model.Id })" class="edit-button">Editează Categoria</a>
             <form action="@Url.Action("Delete", "Category", new { id = Model.Id })" method="post" class="d-inline">
-                <button id="delete-button" type="submit" style="background-color:darkred; color:azure; border-radius:5px; padding: 10px 15px; border: none; cursor:pointer;">Șterge Categoria</button>
+                <button type="submit" class="delete-button">Șterge Categoria</button>
             </form>
         </div>
     }
