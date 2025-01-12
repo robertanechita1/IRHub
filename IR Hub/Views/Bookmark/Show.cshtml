@@ -28,23 +28,11 @@
                         <div class="d-flex justify-content-end">
                             @if (User.Identity.IsAuthenticated)
                             {
-                            <!-- Secțiunea pentru Like și Dislike -->
                                 <div class="d-flex">
-                                    <form asp-action="New" asp-controller="Vote" method="post" class="d-inline me-2">
-                                        <input type="hidden" name="BookmarkId" value="@Model.Id" />
-                                        <input type="hidden" name="UserId" value="@User.FindFirst("sub")?.Value" />
-                                        <button type="submit" name="VoteType" value="Like" class="like-button">Like</button>
-                                    </form>
-
-                                    <form asp-action="New" asp-controller="Vote" method="post" class="d-inline">
-                                        <input type="hidden" name="BookmarkId" value="@Model.Id" />
-                                        <input type="hidden" name="UserId" value="@User.FindFirst("sub")?.Value" />
-                                        <button type="submit" name="VoteType" value="Dislike" class="dislike-button">Dislike</button>
-                                    </form>
                                     <form asp-action="AddCategory" asp-controller="Bookmark" method="post" class="d-inline">
                                         <input type="hidden" name="BookmarkId" value="@Model.Id" />
                                         <div>
-                                            <select name="CategoryId" id="categSelect" class="form-control">
+                                            <select name="CategoryId" id="categSelect" class="save-button">
                                                 <option value="" class="adaugat-button" selected hidden>Save</option>
                                                 @foreach (var categ in ViewBag.UserCategories)
                                                 {
@@ -79,7 +67,7 @@
                             {
                                 <!-- Secțiunea pentru Editează și Șterge -->
                                 <div class="d-flex justify-content-end">
-                                <a class="like-button" href="@Url.Action("Edit", "Bookmark", new { id = Model.Id })">Editează</a>
+                                <a class="edit-button" href="@Url.Action("Edit", "Bookmark", new { id = Model.Id })">Editează</a>
                                     <form action="@Url.Action("Delete", "Bookmark", new { id = Model.Id })" method="post" class="d-inline">
                                     <button type="submit" class="dislike-button">Șterge</button>
                                     </form>
@@ -88,6 +76,23 @@
                         </div>
                     
                 </div>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <!-- Secțiunea pentru Like și Dislike -->
+                    <div class="d-flex">
+                        <form asp-action="New" asp-controller="Vote" method="post" class="d-inline me-2 justify-content-start">
+                            <input type="hidden" name="BookmarkId" value="@Model.Id" />
+                            <input type="hidden" name="UserId" value="@User.FindFirst("sub")?.Value" />
+                            <button type="submit" name="VoteType" value="Like" class="like-button">Like</button>
+                        </form>
+
+                        <form asp-action="New" asp-controller="Vote" method="post" class="d-inline justify-content-start">
+                            <input type="hidden" name="BookmarkId" value="@Model.Id" />
+                            <input type="hidden" name="UserId" value="@User.FindFirst("sub")?.Value" />
+                            <button type="submit" name="VoteType" value="Dislike" class="dislike-button">Dislike</button>
+                        </form>
+                    </div>
+                }
             </div>
 
 

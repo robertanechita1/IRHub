@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IR_Hub.Models
 {
     public class Category
     {
         public int Id { get; set; }
+        [Required(ErrorMessage = "Categoria are nevoie de un titlu.")]
         public string Name { get; set; }
         public string? Description { get; set; }
         public bool visibility { get; set; }

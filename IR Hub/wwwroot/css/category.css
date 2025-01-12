@@ -27,6 +27,14 @@ body {
 }
 
 
+.delete-button {
+    background-color: #bd1111;
+    text-decoration: none;
+    color: white;
+    padding: 8px 13px;
+    border-radius: 5px;
+    border: none;
+}
 .delete-button:hover {
     background-color: darkred; 
     color: #fff; 

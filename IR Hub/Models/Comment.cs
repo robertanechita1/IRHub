@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IR_Hub.Models
@@ -17,6 +18,7 @@ namespace IR_Hub.Models
 
         public DateTime Date_created { get; set; } = DateTime.Now;
         public DateTime Date_updated { get; set; } = DateTime.Now;
+        [Required(ErrorMessage = "Nu se poate publica un comentariu gol.")]
         public string Content { get; set; }
     }
 }

@@ -33,12 +33,14 @@ body {
     }
 
 .card-footer {
-    background-color: #f7f2ed;
     border-top: 1px solid #ddd;
-    padding: 15px;
+    background-color: #f6ede7;
+    padding: 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 30px;
+    margin-bottom: 0;
 }
 
     .card-footer span {
@@ -47,13 +49,14 @@ body {
     }
 
 .like-button {
-    border-radius: 15px;
-    border-style: none;
+    border: none;
+    border-radius: 25px;
     padding: 5px 15px;
     font-size: 0.9rem;
     text-decoration: none;
     background-color: #9e897c;
     color: #f7f2ed;
+    margin:-30px -5px 20px 10px;
 }
     .like-button:hover {
         font-size: 0.9rem;
@@ -76,7 +79,37 @@ body {
         color: #f7f2ed;
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     }
+.edit-button {
+    border-radius: 25px;
+    border-style: none;
+    padding: 5px 15px 5px 15px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    text-align: center;
+    background-color: #9e897c;
+    color: #f7f2ed;
+    margin: 20px 0 0px 5px;
+}
 
+    .edit-button:hover {
+        font-size: 0.9rem;
+        background-color: #7d6b60;
+        color: #f7f2ed;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+.save-button {
+    width: 80px;
+    text-align: center;
+    border: 1px solid #f3dbcb;
+    background-color: #f0e5de;
+    padding: 5px;
+}
+#addButton {
+    background-color: #f0e5de;
+    width: 30px;
+    color: black;
+    border: 1px solid #a59185;
+}
 .media {
     border-bottom: 1px solid #ddd;
     padding-bottom: 10px;
