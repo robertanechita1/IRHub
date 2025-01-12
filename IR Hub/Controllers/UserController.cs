@@ -110,9 +110,27 @@ public class UserController : Controller
                 return NotFound(); 
             }
 
-            // Actualizează câmpurile utilizatorului(vedem daca se folosesc sau nu valoarile default pentru nume si prenume
-            user.FirstName = string.IsNullOrWhiteSpace(newData.FirstName) ? "Utilizator" : newData.FirstName;
-            user.LastName = string.IsNullOrWhiteSpace(newData.LastName) ? "Necunoscut" : newData.LastName;
+            if (string.IsNullOrWhiteSpace(newData.FirstName) && string.IsNullOrWhiteSpace(newData.LastName))
+            {
+                user.FirstName = "Utilizator";
+                user.LastName = "Necunoscut";
+            }
+            else if (string.IsNullOrWhiteSpace(newData.FirstName))
+            {
+                user.FirstName = " ";
+                user.LastName = newData.LastName;
+            }
+            else if (string.IsNullOrWhiteSpace(newData.LastName))
+            {
+                user.LastName = " ";
+                user.FirstName = newData.FirstName;
+            }
+            else
+            {
+                user.FirstName = newData.FirstName;
+                user.LastName = newData.LastName;
+            }
+
             user.UserName = newData.UserName;
             user.Profile_image = newData.Profile_image;
             user.About = newData.About;
