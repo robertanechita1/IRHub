@@ -145,13 +145,23 @@ public class UserController : Controller
         var comments = db.Comments.Where(u => u.UserId == id); 
         foreach (var comment in comments)
         {
-              db.Comments.Remove(comment);
+            var bookmars = db.Bookmarks.Where(u => u.Id == comment.BookmarkId);
+            foreach(var bookmar in bookmars)
+            {
+                bookmar.CommentsCount -= 1;
+            }
+            db.Comments.Remove(comment);
         }
 
         //Delete user votes
         var votes = db.Votes.Where(u => u.UserId == id);
         foreach (var vote in votes)
         {
+            var bookmars = db.Bookmarks.Where(u => u.Id == vote.BookmarkId);
+            foreach (var bookmar in bookmars)
+            {
+                bookmar.VotesCount -= 1;
+            }
             db.Votes.Remove(vote);
         }
 
