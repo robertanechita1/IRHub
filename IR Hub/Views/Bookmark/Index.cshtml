@@ -93,3 +93,9 @@ else
     </div>
 }
 
+@if (TempData["message"] != null)
+{
+    <div class="alert @TempData["messageType"]">
+        @TempData["message"]
+    </div>
+}

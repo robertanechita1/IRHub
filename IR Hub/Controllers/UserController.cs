@@ -46,6 +46,11 @@ public class UserController : Controller
         var userId = _userManager.GetUserId(User);
         var user = db.Users.FirstOrDefault(u => u.Id == id);
 
+        if (TempData.ContainsKey("message"))
+        {
+            ViewBag.Msg = TempData["message"].ToString();
+        }
+
         if (user == null)
         {
             return NotFound();
@@ -59,7 +64,7 @@ public class UserController : Controller
             : user.Profile_image;*/
 
 
-        if(userId == id || User.IsInRole("Admin")) 
+        if (userId == id || User.IsInRole("Admin")) 
         {
             var UserCategories = db.Categories.Where(u => u.UserId == id);
             ViewBag.UserCategories = UserCategories;
@@ -105,9 +110,9 @@ public class UserController : Controller
                 return NotFound(); 
             }
 
-            // Actualizează câmpurile utilizatorului
-            user.FirstName = newData.FirstName;
-            user.LastName = newData.LastName;
+            // Actualizează câmpurile utilizatorului(vedem daca se folosesc sau nu valoarile default pentru nume si prenume
+            user.FirstName = string.IsNullOrWhiteSpace(newData.FirstName) ? "Utilizator" : newData.FirstName;
+            user.LastName = string.IsNullOrWhiteSpace(newData.LastName) ? "Necunoscut" : newData.LastName;
             user.UserName = newData.UserName;
             user.Profile_image = newData.Profile_image;
             user.About = newData.About;
@@ -117,7 +122,7 @@ public class UserController : Controller
             db.SaveChanges();
 
             // Redirecționează către profilul utilizatorului
-            return RedirectToAction("Show", new { id = id });
+            return RedirectToAction("Show","User", new { id = id });
         }
         else
         {

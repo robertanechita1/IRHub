@@ -1,7 +1,12 @@
 ﻿<head>
     <link rel="stylesheet" href="/css/user.css">
 </head>
-
+@if (TempData["message"] != null)
+{
+    <div class="alert @TempData["messageType"]">
+        @TempData["message"]
+    </div>
+}
 
 <div class="container mt-5">
     <div class="text-center">
@@ -23,9 +28,9 @@
             {
                 <div class="d-flex justify-content-center">
                     <a class="btn btn-warning btn-sm me-2" id="editUser" href="@Url.Action("Edit", "User", new { id = Model.Id })">Editează Profil</a>
-                    <form action="@Url.Action("Delete", "User", new { id = Model.Id })" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-danger btn-sm" id="delUser">Șterge Contul</button>
-                    </form>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+                       onclick="setDeleteFormAction('@Url.Action("Delete", "User", new { id = @Model.Id})')"
+                       id="delUser">Șterge Contul</a>
                     
                 </div>
                 <div id="addBkCat">
@@ -34,6 +39,26 @@
                     <a class="nav-link" style="border-left: 2px solid black; padding-left: 10px;" href="@Url.Action("New", "Category")">Adaugă Categorie</a>
                 </div>
             }
+
+            <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmDeleteLabel">Confirmare ștergere</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Ești sigur că vrei să ștergi acest Profil? Nu il mai puteti recupera dupa.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-succes" data-bs-dismiss="modal">Nu</button>
+                            <form id="deleteForm" method="post">
+                                <button type="submit" class="btn btn-danger">Da</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             
         </div>

@@ -56,7 +56,7 @@ body {
     text-decoration: none;
     background-color: #9e897c;
     color: #f7f2ed;
-    margin:-30px -5px 20px 10px;
+    margin:-30px 5px 20px 10px;
 }
     .like-button:hover {
         font-size: 0.9rem;

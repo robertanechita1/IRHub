@@ -111,13 +111,6 @@ public class BookmarkController : Controller
 
         ViewBag.SearchString = search;
 
-        // Gestionează mesajele din TempData
-        if (TempData.ContainsKey("message"))
-        {
-            ViewBag.Message = TempData["message"];
-            ViewBag.Alert = TempData["messageType"];
-        }
-
         return View();
 
 
@@ -148,6 +141,11 @@ public class BookmarkController : Controller
         }
 
         SetAccessRights(bookmark.UserId);
+        if (TempData.ContainsKey("message"))
+        {
+            ViewBag.Message = TempData["message"];
+            ViewBag.Alert = TempData["messageType"];
+        }
         return View(bookmark);
     }
 
@@ -165,29 +163,21 @@ public class BookmarkController : Controller
 
         if (ModelState.IsValid)
         {
-            Bookmark b = db.Bookmarks.Include("User")
-                                     .Include("Comments")
-                                     .Include("Comments.User")
-                                     .Where(b => b.Id == BookmarkId)
-                                     .First();
             db.Comments.Add(comment);
+            var b = db.Bookmarks.Include("Comments").FirstOrDefault(b => b.Id == BookmarkId);
             b.CommentsCount++;
-            b.Comments.Add(comment);
             db.SaveChanges();
-            return Redirect("/Bookmark/Show/" + BookmarkId);
+
+            TempData["message"] = "Comentariul a fost adăugat cu succes!";
+            TempData["messageType"] = "alert-success";
         }
         else
         {
-            Bookmark b = db.Bookmarks.Include("User")
-                                     .Include("Comments")
-                                     .Include("Comments.User")
-                                     .Where(b => b.Id == BookmarkId)
-                                     .First();
-            //aici trebuie sa adaug si la comentariile unui user
-            SetAccessRights(b.UserId);
-
-            return View(b);
+            TempData["message"] = "Eroare la adăugarea comentariului.";
+            TempData["messageType"] = "alert-danger";
         }
+
+        return RedirectToAction("Show", new { id = BookmarkId });
     }
 
     [HttpPost]
@@ -209,7 +199,7 @@ public class BookmarkController : Controller
                 db.CategoryBookmarks.Add(categBookmark);
                 db.SaveChanges();
 
-                TempData["message"] = "Articolul a fost adaugat in colectia selectata";
+                TempData["message"] = "Articolul a fost adăugat în colecția selectată!";
                 TempData["messageType"] = "alert-success";
             }
         }
@@ -246,13 +236,17 @@ public class BookmarkController : Controller
             b.CommentsCount--;
             b.Comments!.Remove(comm); //! pentru a nu mai returna error
             db.SaveChanges();
+
+            TempData["message"] = "Comentariul a fost sters cu succes!";
+            TempData["messageType"] = "alert-success";
+
             return RedirectToAction("Show", "Bookmark", new { id = BookmarkId });
         }
         else
         {
             TempData["message"] = "Nu aveți dreptul să ștergeți comentariul.";
             TempData["messageType"] = "alert-danger";
-            return RedirectToAction("Index", "Bookmarks");
+            return RedirectToAction("Index", "Bookmark");
         }
     }
 
@@ -266,7 +260,7 @@ public class BookmarkController : Controller
         {
             TempData["message"] = "Comentariul nu există.";
             TempData["messageType"] = "alert-danger";
-            return RedirectToAction("Index", "Bookmarks", id);
+            return RedirectToAction("Index", "Bookmark", id);
         }
 
         if (comm.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
@@ -277,7 +271,7 @@ public class BookmarkController : Controller
         {
             TempData["message"] = "Nu aveți dreptul să editați comentariul.";
             TempData["messageType"] = "alert-danger";
-            return RedirectToAction("Index", "Bookmarks", id);
+            return RedirectToAction("Index", "Bookmark", id);
         }
     }
 
@@ -291,7 +285,7 @@ public class BookmarkController : Controller
         {
             TempData["message"] = "Comentariul nu există.";
             TempData["messageType"] = "alert-danger";
-            return RedirectToAction("Show", "Bookmarks");
+            return RedirectToAction("Show", "Bookmark", new { id = comm.BookmarkId });
         }
 
         if(string.IsNullOrEmpty(updatedComment.Content))
@@ -307,13 +301,15 @@ public class BookmarkController : Controller
             {
                 comm.Content = updatedComment.Content; // Actualizează conținutul comentariului
                 db.SaveChanges();
+                TempData["message"] = "Comentariul a fost modificat!";
+                TempData["messageType"] = "alert-success";
                 return RedirectToAction("Show", "Bookmark", new { id = comm.BookmarkId });
             }
             else
             {
                 TempData["message"] = "Nu aveți dreptul să editați comentariul.";
                 TempData["messageType"] = "alert-danger";
-                return RedirectToAction("Show", "Bookmarks");
+                return RedirectToAction("Show", "Bookmark", new { id = comm.BookmarkId });
             }
         }
        
@@ -353,7 +349,7 @@ public class BookmarkController : Controller
             bookmark.CommentsCount = 0;
             db.Bookmarks.Add(bookmark);
             db.SaveChanges();
-            TempData["message"] = "Postarea a fost adaugata";
+            TempData["message"] = "Postarea a fost adăugată cu succes!";
             TempData["messageType"] = "alert-success";
             return RedirectToAction("Index", "Bookmark");
         }
@@ -401,7 +397,7 @@ public class BookmarkController : Controller
             bookmark.Title = requestBookmark.Title;
             bookmark.Media_Content = requestBookmark.Media_Content;
             bookmark.Date_updated = DateTime.Now;
-            TempData["message"] = "Poastarea a fost modificata";
+            TempData["message"] = "Poastarea a fost modificată cu succes!";
             TempData["messageType"] = "alert-success";
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -447,7 +443,7 @@ public class BookmarkController : Controller
             }
             db.Bookmarks.Remove(bookmark);
             db.SaveChanges();
-            TempData["message"] = "Postarea a fost stearsa";
+            TempData["message"] = "Postarea a fost stearsă!";
             TempData["messageType"] = "alert-success";
             return RedirectToAction("Index");
         }

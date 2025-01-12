@@ -68,11 +68,14 @@ namespace IR_Hub.Controllers
                 db.Entry(bookmark).State = EntityState.Modified;
                 db.SaveChanges();
 
-                return RedirectToAction("Show", "Bookmark", new { id = bookmarkId });
+                TempData["message"] = "Comentariul a fost adăugat!";
+                TempData["messageType"] = "alert-success";
+
+                return RedirectToAction("New", "Comment");
             }
             else
             {
-                return RedirectToAction("Show", "Bookmark", new { id = bookmarkId });
+                return RedirectToAction("New", "Comment");
             }
 
         }
@@ -134,8 +137,9 @@ namespace IR_Hub.Controllers
                     comm.Date_updated = requestComment.Date_created;
 
                     db.SaveChanges();
-
-                    return RedirectToAction("Show", "Bookmark", new { id = requestComment.BookmarkId });
+                    TempData["message"] = "Comentariul a fost modificat cu succes!";
+                    TempData["messageType"] = "alert-success";
+                    return RedirectToAction("Edit", "Comment", id);
                 }
                 else
                 {

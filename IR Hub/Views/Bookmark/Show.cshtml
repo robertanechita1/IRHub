@@ -2,6 +2,12 @@
 <head>
     <link rel="stylesheet" href="/css/bookmark.css">
 </head>
+@if (TempData["message"] != null)
+{
+    <div class="alert @TempData["messageType"]">
+        @TempData["message"]
+    </div>
+}
 
 <div class="container mt-5">
     <div class="row">
@@ -95,6 +101,11 @@
                 }
             </div>
 
+            <script>
+                function setDeleteFormAction(actionUrl) {
+                    document.getElementById('deleteForm').action = actionUrl;
+                }
+            </script>
 
             <!-- Comentarii -->
             <h4>Comentarii (@Model.CommentsCount)</h4>
@@ -113,8 +124,9 @@
                         @if (@comment.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
                         {
                             <div class="mt-2">
-                                    <a asp-controller="Bookmark" asp-action="EditComment" asp-route-id="@comment.Id" class="like-button">Edit</a>
-                                    <a asp-controller="Bookmark" asp-action="DeleteComment" asp-route-BookmarkId="@Model.Id" asp-route-id="@comment.Id" class="dislike-button">Delete</a>
+                                    <a asp-controller="Bookmark" asp-action="EditComment" asp-route-id="@comment.Id" class="like-button">Editează</a>
+                                    <a asp-controller="Bookmark" asp-action="DeleteComment" asp-route-BookmarkId="@Model.Id" asp-route-id="@comment.Id" class="dislike-button">Șterge</a>
+
 
                             </div>
                         }

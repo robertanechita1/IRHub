@@ -36,3 +36,9 @@
 
     <button type="submit" class="details-button">Salvează Modificările</button>
 </form>
+@if (TempData["message"] != null)
+{
+    <div class="alert @TempData["messageType"]">
+        @TempData["message"]
+    </div>
+}
