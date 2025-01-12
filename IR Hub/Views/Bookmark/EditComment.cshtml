@@ -1,5 +1,8 @@
 ﻿@model IR_Hub.Models.Comment
 
+<head>
+    <link rel="stylesheet" href="/css/home.css">
+</head>
 
 <h2>Editare comentariu</h2>
 <br />
@@ -16,7 +19,18 @@
 
     <br /><br />
 
-    <button class="btn btn-primary" type="submit">Editează comentariul</button>
+    <button class="details-button" type="submit">Editează comentariul</button>
 
 </form>
+
+@* <form asp-action="New" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+</form>
+ *@
+@if (TempData["message"] != null)
+{
+    <div class="alert @TempData["messageType"]">
+        @TempData["message"]
+    </div>
+}
 

@@ -38,3 +38,8 @@
     margin-top:20px;
     gap: 15px;
 }
+
+#addBkCat a:last-child {
+    border-left: 2px solid black;
+        
+}

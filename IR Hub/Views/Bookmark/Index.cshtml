@@ -1,16 +1,25 @@
-﻿<head>
-    <link rel="stylesheet" href="/css/home.css">
-</head>
-<!-- Dropdown for Sorting -->
-<form method="get" class="mb-3 d-flex align-items-center" style="width: auto;">
-    <label for="sortOrder" class="me-2 mb-0">Sortează după</label>
-        @Html.DropDownList("sortOrder", new List<SelectListItem>
-        {
-        new SelectListItem { Text = "Cele mai populare", Value = "popular" },
-        new SelectListItem { Text = "Cele mai recente", Value = "recent" }
-    }, new { @class = "form-select", onchange = "this.form.submit()", style = "width: auto;" })
+﻿<link rel="stylesheet" href="~/css/home.css">
 
-</form>
+
+<div class="bookmarks-header">
+    <!-- Dropdown for Sorting -->
+    <form method="get" class="mb-3 d-flex align-items-center" style="width: auto;">
+        <label for="sortOrder" class="me-2 mb-0">Sortează după</label>
+            @Html.DropDownList("sortOrder", new List<SelectListItem>
+            {
+            new SelectListItem { Text = "Cele mai populare", Value = "popular" },
+            new SelectListItem { Text = "Cele mai recente", Value = "recent" }
+        }, new { @class = "form-select", onchange = "this.form.submit()", style = "width: auto;" })
+    </form>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="add-buttons">
+            <a href="@Url.Action("New", "Bookmark")">Adaugă Bookmark</a>
+            <a href="@Url.Action("New", "Category")">Adaugă Categorie</a>
+        </div>
+    }
+    
+</div>
 
 <!-- Displaying Bookmarks -->
 @if (ViewBag.Bookmarks == null)

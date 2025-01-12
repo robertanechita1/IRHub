@@ -225,10 +225,10 @@ public class BookmarkController : Controller
     [Authorize(Roles = "User,Admin")]
     public IActionResult DeleteComment(int BookmarkId, int id)
     {
-        Comment comm = db.Comments.Include(c => c.Bookmark)
+        var comm = db.Comments.Include(c => c.Bookmark)
                                   .FirstOrDefault(c => c.Id == id);
 
-        Bookmark b = db.Bookmarks.Include("User")
+        var b = db.Bookmarks.Include("User")
                      .Include("Comments")
                      .Include("Comments.User")
                      .FirstOrDefault(b => b.Id == BookmarkId); // Folosește doar FirstOrDefault
@@ -240,11 +240,11 @@ public class BookmarkController : Controller
         }
 
         // Verifică drepturile utilizatorului
-        if (comm.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+        if (comm!.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
         {
             db.Comments.Remove(comm);
             b.CommentsCount--;
-            b.Comments.Remove(comm);
+            b.Comments!.Remove(comm); //! pentru a nu mai returna error
             db.SaveChanges();
             return RedirectToAction("Show", "Bookmark", new { id = BookmarkId });
         }
@@ -260,7 +260,7 @@ public class BookmarkController : Controller
     [Authorize(Roles = "User,Admin")]
     public IActionResult EditComment(int id)
     {
-        Comment comm = db.Comments.Find(id);
+        var comm = db.Comments.Find(id);
 
         if (comm == null)
         {
@@ -285,7 +285,7 @@ public class BookmarkController : Controller
     [Authorize(Roles = "User,Admin")]
     public IActionResult EditComment(int id, Comment updatedComment)
     {
-        Comment comm = db.Comments.Find(id);
+        var comm = db.Comments.Find(id);
 
         if (comm == null)
         {
@@ -294,18 +294,29 @@ public class BookmarkController : Controller
             return RedirectToAction("Show", "Bookmarks");
         }
 
-        if (comm.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+        if(string.IsNullOrEmpty(updatedComment.Content))
         {
-            comm.Content = updatedComment.Content; // Actualizează conținutul comentariului
-            db.SaveChanges();
-            return RedirectToAction("Show", "Bookmark", new { id = comm.BookmarkId });
+            TempData["message"] = "Conținutul comentariului nu poate fi gol.";
+            TempData["messageType"] = "alert-danger";
+            return View(comm);
         }
+
         else
         {
-            TempData["message"] = "Nu aveți dreptul să editați comentariul.";
-            TempData["messageType"] = "alert-danger";
-            return RedirectToAction("Show", "Bookmarks");
+            if (comm.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                comm.Content = updatedComment.Content; // Actualizează conținutul comentariului
+                db.SaveChanges();
+                return RedirectToAction("Show", "Bookmark", new { id = comm.BookmarkId });
+            }
+            else
+            {
+                TempData["message"] = "Nu aveți dreptul să editați comentariul.";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Show", "Bookmarks");
+            }
         }
+       
     }
 
     //adaugarea unui nou bookmark
@@ -382,7 +393,7 @@ public class BookmarkController : Controller
     [Authorize(Roles = "User,Admin")]
     public IActionResult Edit(int id, Bookmark requestBookmark)
     {
-        Bookmark bookmark = db.Bookmarks.Find(id);
+        var bookmark = db.Bookmarks.Find(id);
 
         if (ModelState.IsValid)
         {
@@ -409,7 +420,8 @@ public class BookmarkController : Controller
     [Authorize(Roles = "User,Admin")]
     public ActionResult Delete(int id)
     {
-        Bookmark bookmark = db.Bookmarks.Include("Comments")
+        var bookmark = db.Bookmarks.Include("Comments")
+                                    .Include("Votes")
                                      .Where(art => art.Id == id)
                                      .First();
 
