@@ -1,6 +1,12 @@
 ﻿<head>
     <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/category.css">
 </head>
+
+@{
+    var bookmarks = ViewBag.Bookmarks as List<Bookmark>;
+}
+
 <form asp-action="Edit" asp-controller="Category" method="post" asp-route-id="@Model.Id" class="mt-3">
     <input type="hidden" name="id" value="@Model.Id" />
 
@@ -25,5 +31,52 @@
         }, new { @class = "form-select", style = "width: auto;" })
     </div>
 
-    <button type="submit" class="details-button">Salvează Modificările</button>
+    <button type="submit" class="details-button" style="margin-top:10px; margin-bottom:30px;">Salvează Modificările</button>
 </form>
+
+@if (bookmarks != null && bookmarks.Any())
+{
+    <div class="bookmark-container">
+        @foreach (var bookmark in bookmarks)
+        {
+            <div class="bookmark-card">
+                @if (!string.IsNullOrEmpty(bookmark.Media_Content))
+                {
+                    var mediaUrl = bookmark.Media_Content.ToLower();
+                    if (mediaUrl.EndsWith(".jpg") || mediaUrl.EndsWith(".jpeg") || mediaUrl.EndsWith(".png") || mediaUrl.EndsWith(".gif"))
+                    {
+                        <img src="@bookmark.Media_Content" alt="Media Content" class="bookmark-media" />
+                    }
+                    else if (mediaUrl.EndsWith(".mp4") || mediaUrl.EndsWith(".webm") || mediaUrl.EndsWith(".ogg"))
+                    {
+                        <video controls class="bookmark-media">
+                            <source src="@bookmark.Media_Content" type="video/mp4" />
+                            <source src="@bookmark.Media_Content" type="video/webm" />
+                            <source src="@bookmark.Media_Content" type="video/ogg" />
+                            Browser-ul tău nu suportă elementul video.
+                        </video>
+                    }
+                    else
+                    {
+                        <p>Conținut media: <a href="@bookmark.Media_Content" target="_blank">@bookmark.Media_Content</a></p>
+                    }
+                }
+                <h3 class="bookmark-title">@bookmark.Title</h3>
+                <form action="@Url.Action("DeleteBookmarkCateg", "Category", new { bookmarkid = bookmark.Id, categoryId = Model.Id })" method="post" class="d-inline">
+                    <button type="submit" id="dlt-button" style="background: none; border:none; color:darkred;">Elimină Bookmark-ul din Categorie</button>
+                </form>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>Nu există bookmark-uri asociate acestei categorii.</p>
+}
+
+@if (TempData["message"] != null)
+{
+    <div class="alert @TempData["messageType"]">
+        @TempData["message"]
+    </div>
+}

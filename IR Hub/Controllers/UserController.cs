@@ -195,7 +195,6 @@ public class UserController : Controller
             db.Categories.Remove(category);
         }
 
-        db.SaveChanges();
 
         db.Users.Remove(user);
 

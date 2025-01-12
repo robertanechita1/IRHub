@@ -61,7 +61,7 @@ body {
     align-items: center; /* centrare pe orizontala*/
 }
 
-/* media */
+
 .bookmark-media {
     max-width: 90%; /* la ltimea cardului */
     height: auto;
@@ -69,7 +69,7 @@ body {
     margin-bottom: 10px;
 }
 
-/* Titlu bookmark */
+
 .bookmark-title {
     font-size: 18px;
     font-weight: bold;
@@ -77,7 +77,7 @@ body {
     text-align: center;
 }
 
-/* Link pentru detalii */
+
 .bookmark-link {
     text-decoration: none;
     color: black;
@@ -86,3 +86,22 @@ body {
 .bookmark-link:hover {
     color: #0056b3;
 }
+
+
+/*???*/
+form #dlt-button {
+    background: none; 
+    border: none; 
+    color: red; 
+    text-decoration: none; 
+    cursor: pointer; 
+    padding: 5px; 
+    transition: color 0.3s ease; 
+}
+
+form #dlt-button:hover {
+    color: red; 
+}
+
+
+

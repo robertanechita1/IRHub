@@ -9,7 +9,9 @@
     </div>
 }
 
+
 <div class="container mt-5">
+    
     <div class="row">
         <div id="bookmark" class="col-md-8 offset-md-2">
 
@@ -38,7 +40,7 @@
                                     <form asp-action="AddCategory" asp-controller="Bookmark" method="post" class="d-inline">
                                         <input type="hidden" name="BookmarkId" value="@Model.Id" />
                                         <div>
-                                            <select name="CategoryId" id="categSelect" class="save-button">
+                                            <select name="CategoryId" id="categSelect" class="save-button" onchange="this.form.submit()">
                                                 <option value="" class="adaugat-button" selected hidden>Save</option>
                                                 @foreach (var categ in ViewBag.UserCategories)
                                                 {
@@ -46,30 +48,11 @@
                                                 }
                                             </select>
                                         </div>
-                                        <div>
-                                            <button id="addButton" type="submit" class="btn btn-success ms-2" style="display: none;">+</button>
-
-                                        </div>
                                     </form>
-                                    <script>
-                                        const categorySelect = document.getElementById('categSelect');
-                                        const addButton = document.getElementById('addButton');
-                                        document.getElementById('categSelect').addEventListener('change', function () {
-                                            if (this.value) {
-                                                // daca e selectata o optiune, apare +
-                                                addButton.style.display = 'inline-block';
-                                            }
-                                            else {
-                                                addButton.style.display = 'none';
-                                            }
-                                        });
-                                    </script>
                                 </div>
-                            
                             }
-                        
 
-                        @if (ViewBag.AfisareButoane)
+                            @if (ViewBag.AfisareButoane)
                             {
                                 <!-- Secțiunea pentru Editează și Șterge -->
                                 <div class="d-flex justify-content-end">
@@ -154,3 +137,4 @@
         </div>
     </div>
 </div>
+

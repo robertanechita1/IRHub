@@ -101,7 +101,7 @@ public class CategoryController : Controller
             TempData["message"] = "Categoria a fost adăugată!";
             TempData["messageType"] = "alert-success";
 
-            return RedirectToAction("New","Category"); //redirectionare inapoi in profil
+            return RedirectToAction("Index","Bookmark"); 
         }
         else
         {
@@ -114,7 +114,16 @@ public class CategoryController : Controller
 
     public ActionResult Edit(int id)
     {
-        Category category = db.Categories.Find(id);
+        var category = db.Categories.Find(id);
+
+        var bookmarkCategs = db.CategoryBookmarks.Where(u => u.CategoryId == id);
+
+        // extragem toate BookmarkId-urile intr-o lista
+        var bookmarkIds = bookmarkCategs.Select(rel => rel.BookmarkId).ToList();
+
+        var bookmarks = db.Bookmarks.Where(b => bookmarkIds.Contains(b.Id)).ToList();
+
+        ViewBag.Bookmarks = bookmarks;
         return View(category);
     }
 
@@ -127,16 +136,54 @@ public class CategoryController : Controller
         {
 
             category.Name = requestCategory.Name;
-            category.Description = requestCategory.Description;
+            if (string.IsNullOrEmpty(requestCategory.Description)) 
+            {
+                category.Description = "Fara descriere";
+            }
+            else
+            {
+                category.Description = requestCategory.Description;
+            }
+
             category.visibility = requestCategory.visibility;
             category.Date_updated = DateTime.Now;
             db.SaveChanges();
             TempData["message"] = "Categoria a fost modificata!";
+            TempData["messageType"] = "alert-success";
             return RedirectToAction("Show", "User", new { id = category.UserId });
         }
         else
         {
             return RedirectToAction("Show", "User", new { id = category.UserId });
+        }
+    }
+
+    [HttpPost]
+    public ActionResult DeleteBookmarkCateg(int bookmarkId, int categoryId) 
+    {
+        if (ModelState.IsValid) 
+        {
+            var bookmarkCateg = db.CategoryBookmarks.Where(u => u.BookmarkId == bookmarkId && u.CategoryId == categoryId).First();
+            if (bookmarkCateg != null) 
+            {
+                db.CategoryBookmarks.Remove(bookmarkCateg);
+                db.SaveChanges();
+                TempData["message"] = "Bookmark-ul a fost eliminat din categorie!";
+                TempData["messageType"] = "alert-success";
+                return RedirectToAction("Edit", "Category", new { id = categoryId }); ;
+            }
+            else
+            {
+                TempData["message"] = "Bookmark-ul nu exista in categorie";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Edit", "Category", new { id = categoryId }); ;
+            }
+        }
+        else
+        {
+            TempData["message"] = "Categoria nu a putut fi modificata!";
+            TempData["messageType"] = "alert-danger";
+            return RedirectToAction("Edit", "Category", new { id = categoryId });
         }
     }
 
@@ -154,7 +201,10 @@ public class CategoryController : Controller
         }
         db.Categories.Remove(category);
 
+        
+
         TempData["message"] = "Categoria a fost stearsa";
+        TempData["messageType"] = "alert-success";
         db.SaveChanges();
         return RedirectToAction("Show", "User", new { id = userrId });
     }

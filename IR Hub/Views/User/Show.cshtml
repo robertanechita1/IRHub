@@ -28,9 +28,7 @@
             {
                 <div class="d-flex justify-content-center">
                     <a class="btn btn-warning btn-sm me-2" id="editUser" href="@Url.Action("Edit", "User", new { id = Model.Id })">Editează Profil</a>
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
-                       onclick="setDeleteFormAction('@Url.Action("Delete", "User", new { id = @Model.Id})')"
-                       id="delUser">Șterge Contul</a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" id="delUser">Șterge Contul</a>
                     
                 </div>
                 <div id="addBkCat">
@@ -52,7 +50,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-succes" data-bs-dismiss="modal">Nu</button>
-                            <form id="deleteForm" method="post">
+                            <form id="deleteForm" action="@Url.Action("Delete", "User", new { id = @Model.Id })" method="post">
                                 <button type="submit" class="btn btn-danger">Da</button>
                             </form>
                         </div>

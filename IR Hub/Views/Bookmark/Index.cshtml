@@ -21,6 +21,13 @@
     
 </div>
 
+@if (TempData["message"] != null)
+{
+    <div class="alert @TempData["messageType"]">
+        @TempData["message"]
+    </div>
+}
+
 <!-- Displaying Bookmarks -->
 @if (ViewBag.Bookmarks == null)
 {
@@ -90,12 +97,5 @@ else
                 }
             </ul>
         </nav>
-    </div>
-}
-
-@if (TempData["message"] != null)
-{
-    <div class="alert @TempData["messageType"]">
-        @TempData["message"]
     </div>
 }

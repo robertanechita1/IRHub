@@ -400,7 +400,7 @@ public class BookmarkController : Controller
             TempData["message"] = "Poastarea a fost modificată cu succes!";
             TempData["messageType"] = "alert-success";
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Show", new { id = bookmark.Id });
 
         }
         else
