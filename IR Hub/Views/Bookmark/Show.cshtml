@@ -1,4 +1,5 @@
 ﻿
+
 <head>
     <link rel="stylesheet" href="/css/bookmark.css">
 </head>
@@ -24,12 +25,40 @@
                     <br />
                     <small>@Model.Date_created.ToString("dd/MM/yyyy")</small>
                     <p class="card-text">@Model.Description</p>
+                    <!--continutul media, video sau imagine/gif-->
                     @if (!string.IsNullOrEmpty(Model.Media_Content))
                     {
                         <div class="media-content">
-                            <iframe src="@Model.Media_Content" width="100%" height="400px" frameborder="0"></iframe>
+                            @if (Model.Media_Content.Contains("youtube.com/watch") || Model.Media_Content.Contains("youtu.be"))//video
+                            {
+                                var videoId = "";
+                                if (Model.Media_Content.Contains("youtube.com/watch"))
+                                {
+                                    var uri = new Uri(Model.Media_Content);
+                                    var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+                                    videoId = query["v"];
+                                }
+                                else if (Model.Media_Content.Contains("youtu.be"))
+                                {
+                                    var parts = Model.Media_Content.Split('/');
+                                    videoId = parts[parts.Length - 1]; // Accesare manuală a ultimului element
+                                }
+
+                                var embedUrl = $"https://www.youtube.com/embed/{videoId}";
+                                <iframe src="@embedUrl"
+                                        class="responsive-media"
+                                        frameborder="0"
+                                        allowfullscreen>
+                                </iframe>
+                            }
+                            else//imagine
+                            {
+                                <img src="@Model.Media_Content" alt="Continut Media" class="bookmark-media" />
+                            }
                         </div>
                     }
+
+
                 </div>
                 <div class="card-footer text-muted">
                     <span>Voturi: @Model.VotesCount | Comentarii: @Model.CommentsCount</span>

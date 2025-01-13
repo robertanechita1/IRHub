@@ -157,3 +157,35 @@ form {
         font-size: 0.8rem;
     }
 
+
+div.media-content {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    flex-direction: column; /* Asigură poziționarea verticală a elementelor */
+    width: 100%; 
+    height: auto; 
+    text-align: center; /* Asigură alinierea textului în caz de caption */
+}
+
+iframe.responsive-media {
+    max-width: 700px;
+    max-height: 700px;
+    height: 500px;
+    width: 700px; 
+    margin: auto; 
+    display: block;
+    object-fit: contain; /* Menține proporțiile */
+}
+
+img.bookmark-media {
+    max-width: 90%; /* Limitează lățimea imaginii */
+    height: auto;
+    border-radius: 8px; 
+    margin: auto; /* Centrează imaginea */
+    margin-bottom: 10px;
+    display: block;
+}
+
+
+

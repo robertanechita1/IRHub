@@ -7,7 +7,7 @@
 @{
     var bookmarks = ViewBag.Bookmarks as List<Bookmark>;
 }
-
+<!--butoanele de editare si stergere categorie-->
 <div class="category-header">
     <h1 class="category-title">@Model.Name</h1>
     @if (ViewBag.AfisareButoane)
@@ -25,6 +25,7 @@
 
 @if (bookmarks != null && bookmarks.Any())
 {
+    <!--afisarea bookmarkurilor din categorie-->
     <div class="bookmark-container">
         @foreach (var bookmark in bookmarks)
         {
@@ -32,26 +33,35 @@
                 @if (!string.IsNullOrEmpty(bookmark.Media_Content))
                 {
                     var mediaUrl = bookmark.Media_Content.ToLower();
-                    if (mediaUrl.EndsWith(".jpg") || mediaUrl.EndsWith(".jpeg") || mediaUrl.EndsWith(".png") || mediaUrl.EndsWith(".gif"))
+                    if (mediaUrl.EndsWith(".jpg") || mediaUrl.EndsWith(".jpeg") || mediaUrl.EndsWith(".png") || mediaUrl.EndsWith(".gif")) //poze/gif
                     {
                         <img src="@bookmark.Media_Content" alt="Media Content" class="bookmark-media" />
                     }
-                    else if (mediaUrl.EndsWith(".mp4") || mediaUrl.EndsWith(".webm") || mediaUrl.EndsWith(".ogg"))
+                    else //video
                     {
-                        <video controls class="bookmark-media">
-                            <source src="@bookmark.Media_Content" type="video/mp4" />
-                            <source src="@bookmark.Media_Content" type="video/webm" />
-                            <source src="@bookmark.Media_Content" type="video/ogg" />
-                            Browser-ul tău nu suportă elementul video.
-                        </video>
-                    }
-                    else
-                    {
-                        <p>Conținut media: <a href="@bookmark.Media_Content" target="_blank">@bookmark.Media_Content</a></p>
+                        var videoId = "";
+                        if (bookmark.Media_Content.Contains("youtube.com/watch"))
+                        {
+                            var uri = new Uri(bookmark.Media_Content);
+                            var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+                            videoId = query["v"];
+                        }
+                        else if (bookmark.Media_Content.Contains("youtu.be"))
+                        {
+                            var parts = bookmark.Media_Content.Split('/');
+                            videoId = parts[parts.Length - 1]; // Accesare manuală a ultimului element
+                        }
+
+                        var embedUrl = $"https://www.youtube.com/embed/{videoId}";
+                        <iframe src="@embedUrl"
+                                class="bookmark-media"
+                                frameborder="0"
+                                allowfullscreen>
+                        </iframe>
                     }
                 }
                 <h3 class="bookmark-title">@bookmark.Title</h3>
-                <a href="@Url.Action("Show", "Bookmark", new { id = bookmark.Id })" class="bookmark-link">Vezi detalii</a>
+                <a href="@Url.Action("Show", "Bookmark", new { id = bookmark.Id })" class="bookmark-link">Vezi detalii</a>//aici ma duce la bookmark-ul respectiv
             </div>
         }
     </div>

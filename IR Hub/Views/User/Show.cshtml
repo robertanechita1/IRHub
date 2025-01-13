@@ -23,7 +23,7 @@
 
             <h5 class="text-muted">@Model.UserName</h5>
 
-            <!-- Afișează butoanele de editare si stergere dacă este utilizatorul curent sau admin -->
+            <!-- butoanele de editare si stergere dacă este utilizatorul curent sau admin -->
             @if (ViewBag.AfisareButoane)
             {
                 <div class="d-flex justify-content-center">
@@ -31,13 +31,13 @@
                     <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" id="delUser">Șterge Contul</a>
                     
                 </div>
-                <div id="addBkCat">
+                <div id="addBkCat"> <!--butoanele de adaugare bookmark/categorie-->
                     <a class="nav-link" href="@Url.Action("New", "Bookmark")">Adaugă Bookmark</a>
 
                     <a class="nav-link" style="border-left: 2px solid black; padding-left: 10px;" href="@Url.Action("New", "Category")">Adaugă Categorie</a>
                 </div>
             }
-
+            <!--alerta stergere cont-->
             <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -60,6 +60,7 @@
 
             
         </div>
+        <!--sectiunea de about si categoriile utilizatorului-->
         <div id="aboutAndCateg">
             <div class="mt-4">
                 <h5>Despre mine</h5>

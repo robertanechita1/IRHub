@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Imaging;
+using System.Drawing;
+using System.Net;
+using System.Linq;
 
 namespace IR_Hub.Controllers;
 
@@ -116,8 +120,6 @@ public class BookmarkController : Controller
 
 
     }
-
-
 
 
     // afisarea unui singur articol in functie de id-ul si toate comentariile asociate si user ul
@@ -399,7 +401,7 @@ public class BookmarkController : Controller
             bookmark.Title = requestBookmark.Title;
             bookmark.Media_Content = requestBookmark.Media_Content;
             bookmark.Date_updated = DateTime.Now;
-            TempData["message"] = "Poastarea a fost modificată cu succes!";
+            TempData["message"] = "Postarea a fost modificată cu succes!";
             TempData["messageType"] = "alert-success";
             db.SaveChanges();
             return RedirectToAction("Show", new { id = bookmark.Id });

@@ -88,17 +88,6 @@ body {
 }
 
 
-/*???*/
-form #dlt-button {
-    background: none; 
-    border: none; 
-    color: red; 
-    text-decoration: none; 
-    cursor: pointer; 
-    padding: 5px; 
-    transition: color 0.3s ease; 
-}
-
 form #dlt-button:hover {
     color: red; 
 }

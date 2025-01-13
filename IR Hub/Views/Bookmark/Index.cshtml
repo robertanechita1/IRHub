@@ -11,6 +11,7 @@
             new SelectListItem { Text = "Cele mai recente", Value = "recent" }
         }, new { @class = "form-select", onchange = "this.form.submit()", style = "width: auto;" })
     </form>
+    <!--butoanele de adaugare bookmark/category-->
     @if (User.Identity.IsAuthenticated)
     {
         <div class="add-buttons">

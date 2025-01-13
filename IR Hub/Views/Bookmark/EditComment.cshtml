@@ -23,10 +23,7 @@
 
 </form>
 
-@* <form asp-action="New" method="post">
-    <div asp-validation-summary="All" class="text-danger"></div>
-</form>
- *@
+
 @if (TempData["message"] != null)
 {
     <div class="alert @TempData["messageType"]">
