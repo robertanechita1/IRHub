@@ -31,6 +31,7 @@ public class BookmarkController : Controller
     {
         var bookmarks = db.Bookmarks.Include("User");
 
+        // in functie de ce se afla in stringul primit ca parametru va sorta bookmark-urile
         switch (sortOrder)
         {
             case "recent":
@@ -46,7 +47,7 @@ public class BookmarkController : Controller
                 break;
         }
 
-        // ViewBag.OriceDenumireSugestiva, am adaugat  ToList pt ca bookmarks are un query
+        //am adaugat  ToList pt ca bookmarks are un query
 
         ViewBag.Bookmarks = bookmarks.ToList();
 
@@ -120,8 +121,6 @@ public class BookmarkController : Controller
 
 
     // afisarea unui singur articol in functie de id-ul si toate comentariile asociate si user ul
-    // [HttpGet]  implicit
-
     public IActionResult Show(int id)
     {
         Bookmark bookmark = db.Bookmarks.Include("Comments")
@@ -129,7 +128,7 @@ public class BookmarkController : Controller
                                      .Include("Comments.User")
                           .Where(bk => bk.Id == id)
                           .First();
-        ViewBag.UserCategories = db.Categories
+        ViewBag.UserCategories = db.Categories //pentru categoriile din butonul Save
                                   .Where(b => b.UserId == _userManager.GetUserId(User))
                                   .ToList();
 
@@ -149,6 +148,7 @@ public class BookmarkController : Controller
         return View(bookmark);
     }
 
+    //adaugare comentariu
     [HttpPost]
     [Authorize(Roles = "User,Admin")]
     public IActionResult NewComment(int BookmarkId, string Cont)
@@ -180,6 +180,8 @@ public class BookmarkController : Controller
         return RedirectToAction("Show", new { id = BookmarkId });
     }
 
+
+    //adaugarea unui bookmark intr-o categorie proprie
     [HttpPost]
     [Authorize(Roles = "User,Admin")]
     public IActionResult AddCategory([FromForm] CategoryBookmark categBookmark)
@@ -212,6 +214,7 @@ public class BookmarkController : Controller
         return Redirect("/Bookmark/Show/" + categBookmark.BookmarkId);
     }
 
+    //stergerea unui comentariu propriu sau de catre admin
     [Authorize(Roles = "User,Admin")]
     public IActionResult DeleteComment(int BookmarkId, int id)
     {
@@ -250,7 +253,7 @@ public class BookmarkController : Controller
         }
     }
 
-
+    //editare comentariu
     [Authorize(Roles = "User,Admin")]
     public IActionResult EditComment(int id)
     {
@@ -316,13 +319,12 @@ public class BookmarkController : Controller
     }
 
     //adaugarea unui nou bookmark
-    // [HttpGet] implicit
 
     [Authorize(Roles = "User,Admin")]
     public IActionResult New()
     {
         var bookmark = new Bookmark
-        {//nu stiu daca sunt necesare astea de aici
+        {
             Date_created = DateTime.Now,
             UserId = _userManager.GetUserId(User),
             User = db.Users.FirstOrDefault(u => u.Id == _userManager.GetUserId(User)),
@@ -433,7 +435,7 @@ public class BookmarkController : Controller
                 }
             }
 
-            //Delete user votes
+            //Delete bookmark votes
             if (bookmark.VotesCount > 0)
             {
                 foreach (var vote in bookmark.Votes)

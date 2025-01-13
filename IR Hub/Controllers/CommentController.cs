@@ -80,6 +80,7 @@ namespace IR_Hub.Controllers
 
         }
 
+        //stergerea unui comentariu de catre admin sau user-ul creator
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
         public IActionResult Delete(int id)
@@ -102,9 +103,7 @@ namespace IR_Hub.Controllers
 
         
         //editarea unui comm 
-        // [HttpGet] implicit
         
-
         [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id)
         {

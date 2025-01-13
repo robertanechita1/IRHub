@@ -8,7 +8,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace IR_Hub.Controllers;
 
-//[Authorize(Roles = "User,Admin")]
+
 public class CategoryController : Controller
 {
 
@@ -39,6 +39,7 @@ public class CategoryController : Controller
         return View();
     }
 
+    //afisarea unei categorii in functie de id ul acesteia
     public ActionResult Show(int id)
     {
         var category = db.Categories.Find(id);
@@ -55,8 +56,6 @@ public class CategoryController : Controller
         return View(category);
 
     }
-
-    // [HttpGet] implicit
 
     [Authorize(Roles = "User,Admin")]
     public IActionResult New()
@@ -110,8 +109,8 @@ public class CategoryController : Controller
         }
     }
 
-
-
+    //editarea categoriilor
+    [Authorize(Roles = "User,Admin")]
     public ActionResult Edit(int id)
     {
         var category = db.Categories.Find(id);
@@ -158,7 +157,10 @@ public class CategoryController : Controller
         }
     }
 
+    //stergerea unui bookmark din categorie de catre admin sau user-ul respectiv
+
     [HttpPost]
+    [Authorize(Roles = "User,Admin")]
     public ActionResult DeleteBookmarkCateg(int bookmarkId, int categoryId) 
     {
         if (ModelState.IsValid) 
@@ -187,6 +189,8 @@ public class CategoryController : Controller
         }
     }
 
+    //stergerea unei categorii de atre admin sau user-ul respectiv
+    [Authorize(Roles = "User,Admin")]
     [HttpPost]
     public ActionResult Delete(int id)
     {
@@ -195,13 +199,13 @@ public class CategoryController : Controller
                                          .First();
         var userrId = category.UserId;
         var bookmarkCategories = db.CategoryBookmarks.Where(c => c.CategoryId == id);
+
+        //sterg toate relatiile pe care le are categoria
         foreach(var bookmarkcateg in bookmarkCategories)
         {
             db.CategoryBookmarks.Remove(bookmarkcateg);
         }
         db.Categories.Remove(category);
-
-        
 
         TempData["message"] = "Categoria a fost stearsa";
         TempData["messageType"] = "alert-success";

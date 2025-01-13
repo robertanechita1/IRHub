@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ArticlesApp.Controllers;
 
-//[Authorize(Roles = "Admin")]
+
 public class UserController : Controller
 {
     private readonly ApplicationDbContext db;
@@ -41,6 +41,7 @@ public class UserController : Controller
         return View();
     }
 
+    //pagina de profil a unui user
     public IActionResult Show(string id)
     {
         var userId = _userManager.GetUserId(User);
@@ -58,12 +59,7 @@ public class UserController : Controller
 
         SetAccessRights(id);
 
-        /*// un URL implicit pentru poza de profil, daca nu exista
-        user.Profile_image = string.IsNullOrEmpty(user.Profile_image)
-            ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9eLeSj523CsBb4S2TNM4BZ-8TuObk0YsoaFQVvATuYEGEXLqxjIqAxOJh0z2xgU1kPzc&usqp=CAU"
-            : user.Profile_image;*/
-
-
+        //daca este contul propriu sau admin afisez si categoriile private
         if (userId == id || User.IsInRole("Admin")) 
         {
             var UserCategories = db.Categories.Where(u => u.UserId == id);
@@ -83,8 +79,10 @@ public class UserController : Controller
         
     }
     [HttpGet]
-
+    
+    //editarea contului propriu sau de catre admin
     [HttpGet]
+    [Authorize(Roles = "User,Admin")]
     public IActionResult Edit(string id)
     {
         var user = db.Users.Find(id);
@@ -99,6 +97,7 @@ public class UserController : Controller
 
 
     [HttpPost]
+    [Authorize(Roles = "User,Admin")]
     public IActionResult Edit(string id, User newData)
     {
         if (ModelState.IsValid)
@@ -109,6 +108,8 @@ public class UserController : Controller
             {
                 return NotFound(); 
             }
+
+            //conditii de afisare a numelui, in cazul in care utilizatorul si-a pus doar nume, doar prenume, sau niciuna
 
             if (string.IsNullOrWhiteSpace(newData.FirstName) && string.IsNullOrWhiteSpace(newData.LastName))
             {
@@ -150,8 +151,9 @@ public class UserController : Controller
     }
 
 
-
+    //stergerea contului de utilizator sau de catre admin
     [HttpPost]
+    [Authorize(Roles = "User,Admin")]
     public IActionResult Delete(string id)
     {
         var user = db.Users
@@ -223,11 +225,18 @@ public class UserController : Controller
             db.Categories.Remove(category);
         }
 
-
+        var logout = string.Equals(id, _userManager.GetUserId(User));
+           
         db.Users.Remove(user);
 
         db.SaveChanges();
-        _signInManager.SignOutAsync(); //delogare dupa stergerea contului 
+
+        if(logout)
+        {
+            _signInManager.SignOutAsync(); //delogare dupa stergerea contului 
+
+        }
+       
 
         return RedirectToAction("Index", "Bookmark");
     }

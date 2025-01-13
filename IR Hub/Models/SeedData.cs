@@ -49,7 +49,7 @@ namespace IR_Hub.Models
 
                 // CREAREA USERILOR IN BD
                 // Se creeaza cate un user pentru fiecare rol
-                context.Users.AddRange(//to check with the database
+                context.Users.AddRange(
                 new User
                 {
                     Id = "8e445865-a24d-4543-a6c6-9443d048cdb0",
